@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+
 import './App.css';
+import { useDispatch } from "react-redux"
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import HomeComp from './components/homepage';
+import AllPlayersComp from './components/allPlayers';
+import { init } from './components/utils';
+import TournamentComp from './components/tournament';
 
 function App() {
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    async function initData(){
+      await init(dispatch)
+    }
+    initData()
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path='/' element={<HomeComp></HomeComp>}></Route>
+        <Route path='/tournament/:id' element={<TournamentComp></TournamentComp>}></Route>
+        <Route path='/players' element={<AllPlayersComp></AllPlayersComp>}></Route>
+      </Routes>
     </div>
   );
 }

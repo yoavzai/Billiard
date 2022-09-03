@@ -1,38 +1,54 @@
-.App {
-  text-align: center;
+body {
+  margin: 20px;
+  direction: rtl;
+  text-align: right;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.table_container {
+  padding: 5px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.table_container input {
+  width: 15px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.free_table {
+  border: 2px solid green;
 }
 
-.App-link {
-  color: #61dafb;
+.taken_table {
+  border: 2px solid red;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.frozen_table {
+  border: 2px solid grey;
+}
+
+.container {
+  border: 2px solid grey;
+  margin: 20px;
+}
+
+.free_player {
+  color: rgb(1, 164, 1);
+}
+
+.not_free_player {
+  color: red;
+}
+
+.red {
+  color: red;
+}
+
+.error_input {
+  border: 2px solid red;
+}
+
+.player_lost {
+  border: 2px solid red;
+}
+
+.player_won {
+  border: 2px solid green;
 }
