@@ -18,7 +18,7 @@ export default function TablesComp() {
                 <button className="button" onClick={() => addTable(tables, dispatch)}>הוסף שולחן</button>
             </div>
             <div>
-                {tables.map(table => {
+                {tables.sort((a,b) => a.data.number - b.data.number).map(table => {
                     return <TableComp key={table.id} table={table}></TableComp>
                 })}
             </div>

@@ -7,7 +7,6 @@ import { addParticipant,
          addPlayer,
          getParticipantByNameFromStore,
          getPlayerByNameFromStore, 
-         getPlayersFromServer, 
          playersNotRegistered} from "./utils"
 
 
@@ -25,18 +24,18 @@ export default function ParticipantsComp() {
     const [isAddPlayerConfirmation, setIsAddPlayerConfirmation] = useState(false)
     const [isAddPlayerErrorMessage, setIsAddPlayerErrorMessage] = useState(false)
     const [addPlayerErrorMessage, setAddPlayerErrorMessage] = useState("")
-    // const [isConfirmation, setIsConfirmation] = useState(false)
     const [playerOptions, setPlayerOptions] = useState([])
+    const [isAddingToServer, setIsAddingToServer] = useState(false)
+
 
     async function addNewPlayer() {
+        setIsAddPlayer(false)
+        setIsAddingToServer(true)
         const time = new Date()
         const newPlayer = await addPlayer({...newPlayerData, date: time.getTime()}, players, dispatch)
+        setIsAddingToServer(false)
         setNewPlayerData({name: "", ranking : rankings[0]})
-        setIsAddPlayer(false)
-        await addNewParticipant(newPlayer)
-        const newPlayers = await getPlayersFromServer()
-        dispatch({type: "players", payload: newPlayers})
-        // setIsConfirmation(true)
+        addNewParticipant(newPlayer)
     }
 
     function addPlayerConfirmed() {
@@ -48,14 +47,16 @@ export default function ParticipantsComp() {
 
 
     async function addNewParticipant(player) {
-        setWantedPlayerName("")
+        setIsAddingToServer(true)
         const time = new Date()
         const newParticipantData = {playerId: player.id, date: time.getTime(), participantsToPlayIds: participants.map(participant => participant.id)}
-        addParticipant(newParticipantData,
-                        currentTournament.id, 
-                        participants,
-                        dispatch) 
-    }
+        await addParticipant(newParticipantData,
+            currentTournament.id, 
+            participants,
+            dispatch) 
+        setIsAddingToServer(false)
+        setWantedPlayerName("")
+        }
 
     async function addNewParticipantBtnClick() {
         if (wantedPlayerName.length === 0) {
@@ -67,7 +68,6 @@ export default function ParticipantsComp() {
         if (participant !== undefined) {
             setIsAddPlayerErrorMessage(true)
             setAddPlayerErrorMessage("שחקן זה כבר רשום")
-            // setWantedPlayerName("")
             return
         }
         setAddPlayerErrorMessage(false)
@@ -89,18 +89,6 @@ export default function ParticipantsComp() {
 
         setPlayerOptions(playersNotRegistered(players, participants)
                         .filter(player => player.data.name.toLowerCase().startsWith(e.target.value.toLowerCase())))
-
-        // if (e.nativeEvent.inputType != "deleteContentBackward")
-        // {
-        //     const playerOptions =
-        //         playersNotRegistered(players, participants)
-        //         .filter(player => player.data.name.toLowerCase().startsWith(e.target.value.toLowerCase()))
-            
-        //     if (playerOptions.length === 1) {
-        //         setWantedPlayerName(playerOptions[0].data.name)
-        //         //add small delay
-        //     }
-        // }
     }
 
     function cancelNewPlayer() {
@@ -136,7 +124,7 @@ export default function ParticipantsComp() {
                 <div>
                     <ul>
                     {playerOptions.map(p => {
-                        return <li><button value={p.data.name} onClick={(e) => {setWantedPlayerName(e.target.value); setPlayerOptions([])}}>{p.data.name}</button></li>
+                        return <li key={p.data.name}><button value={p.data.name} onClick={(e) => {setWantedPlayerName(e.target.value); setPlayerOptions([])}}>{p.data.name}</button></li>
                     })}
                     </ul>
                 </div>
@@ -172,9 +160,13 @@ export default function ParticipantsComp() {
                     {isAddPlayerErrorMessage &&
                     <div className="error_message_container">
                         <span>{addPlayerErrorMessage}</span>
-                        {/* <button onClick={() => setIsAddPlayerErrorMessage(false)}>Ok</button>    */}
                     </div>
                     }
+                </div> :
+                isAddingToServer ?
+                <div>
+                    <span>מוסיף את</span>
+                    <span>{" " + wantedPlayerName + "..."}</span>
                 </div> :
                 <div className="buttons_container">
                         <button disabled={wantedPlayerName.length === 0 ? true : false} className="button" onClick={addNewParticipantBtnClick}>הוסף</button>
@@ -182,13 +174,6 @@ export default function ParticipantsComp() {
                 }       
             </div>
             }
-            {/* {isConfirmation && 
-            <div className="confirmation_container">
-                <span>שחקן הוסף</span>
-                <div className="buttons_container">
-                    <button className="button ok_button" onClick={() => setIsConfirmation(false)}>Ok</button>
-                </div>
-            </div>} */}
             <div className="participants_table">
                 <table className="table">
                     <thead>

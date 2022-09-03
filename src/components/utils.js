@@ -584,7 +584,8 @@ export async function updatePlayer(playerId, playerNewData, players, dispatch) {
 
 export async function addPlayer(playerData, players, dispatch) {
     const newPlayerRef = await addPlayerOnServer(playerData)
-    const newPlayer = await getPlayerByIdFromServer(newPlayerRef.id)
+    const newPlayerQuery = await newPlayerRef.get()
+    const newPlayer = {id: newPlayerQuery.id, data: newPlayerQuery.data()}
     dispatch({type: "players", payload: [...players, newPlayer]})
     return newPlayer
 }

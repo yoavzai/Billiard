@@ -107,7 +107,7 @@ export default function TableComp(props) {
                         <span>מספר שולחן</span>
                         <input type="text"
                                 onChange={(e) => updateTableNumber(table, tables, e.target.value, dispatch)}
-                                defaultValue={table.data.number}>
+                                value={table.data.number}>
                         </input>
                     </div>
                     <div className="text_input_container">
@@ -139,7 +139,7 @@ export default function TableComp(props) {
                         <span>מספר שולחן</span>
                         <input type="text"
                                 onChange={(e) => updateTableNumber(table, tables, e.target.value, dispatch)}
-                                defaultValue={table.data.number}>
+                                value={table.data.number}>
                         </input>
                     </div>
                 </div>
@@ -162,7 +162,7 @@ export default function TableComp(props) {
                         <span>מספר שולחן</span>
                         <input type="text"
                                 onChange={(e) => updateTableNumber(table, tables, e.target.value, dispatch)}
-                                defaultValue={table.data.number}>
+                                value={table.data.number}>
                         </input>
                     </div>
                     <div>

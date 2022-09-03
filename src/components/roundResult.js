@@ -46,6 +46,7 @@ export default function RoundResultComp(props) {
     }
 
     async function deleteResultConfirmed() {
+        setIsDeleteResultConfirmation(false)
         removeResult(result, currentRound, currentTournament, players, participants, dispatch)
     }
 
@@ -91,17 +92,18 @@ export default function RoundResultComp(props) {
                     <span>{result?.participant1?.score}</span>
                     <span>{getPlayerByParticipantIdFromStore(result?.participant2?.id, participants, players)?.data.name}</span>
                     <span>{result?.participant2?.score}</span>
-                    <div className="buttons_container">
-                        <button className="button edit_button" onClick={() => {setIsEditResult(true); setIsDeleteResultConfirmation(false)}}>ערוך</button>
-                        <button className="button delete_button" onClick={deleteResultBtnClick}>מחק</button>
-                    </div>
-                    {isDeleteResultConfirmation &&
+
+                    {isDeleteResultConfirmation ?
                     <div className="confirmation_container">
                         <span>האם אתה בטוח שאתה רוצה למחוק את התוצאה?</span>
                         <div className="buttons_container">
                             <button className="button yes_button" onClick={deleteResultConfirmed}>כן</button>
                             <button className="button no_button" onClick={() => setIsDeleteResultConfirmation(false)}>לא</button>
                         </div>
+                    </div> :
+                    <div className="buttons_container">
+                        <button className="button edit_button" onClick={() => {setIsEditResult(true); setIsDeleteResultConfirmation(false)}}>ערוך</button>
+                        <button className="button delete_button" onClick={deleteResultBtnClick}>מחק</button>
                     </div>
                     }
                 </div>

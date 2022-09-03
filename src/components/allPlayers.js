@@ -17,15 +17,18 @@ export default function AllPlayersComp() {
     const [searchPlayerString, setSearchPlayerString] = useState("")
     const [isAddPlayerErrorMessage, setIsAddPlayerErrorMessage] = useState(false)
     const [addPlayerErrorMessage, setAddPlayerErrorMessage] = useState("")
+    const [isAddingToServer, setIsAddingToServer] = useState(false)
 
     async function addNewPlayer() {
-        const time = new Date()
-
-        addPlayer({...newPlayerData, date: time.getTime()}, players, dispatch)
         setIsAddPlayerErrorMessage(false)
+        setIsAddPlayerConfirmation(false)
+        setIsAddingToServer(true)
+        const time = new Date()
+        await addPlayer({...newPlayerData, date: time.getTime()}, players, dispatch)
+        setIsAddingToServer(false)
         setNewPlayerData({name: "", ranking : rankings[0]})
-        const newPlayers = await getPlayersFromServer()
-        dispatch({type: "players", payload: newPlayers})
+        // const newPlayers = await getPlayersFromServer()
+        // dispatch({type: "players", payload: newPlayers})
         // setIsAddPlayer(false)
         // setIsConfirmation(true)
     }
@@ -59,9 +62,9 @@ export default function AllPlayersComp() {
                     <div className="text_input_container">
                         <label htmlFor="name">שם</label>
                         <input className={`${isAddPlayerErrorMessage ? "error_input" : ""}`}
-                               name="name" type="text" 
-                               value={newPlayerData.name}
-                               onChange={(e) => {setNewPlayerData({...newPlayerData, name: e.target.value}); setIsAddPlayerErrorMessage(false)}}></input>
+                                name="name" type="text" 
+                                value={newPlayerData.name}
+                                onChange={(e) => {setNewPlayerData({...newPlayerData, name: e.target.value}); setIsAddPlayerErrorMessage(false)}}></input>
                     </div>
 
                     <div className="select_container">
@@ -83,9 +86,14 @@ export default function AllPlayersComp() {
                                 <button className="button no_button" onClick={() => setIsAddPlayerConfirmation(false)}>לא</button>
                             </div>                      
                         </div> :
+                        isAddingToServer ?
+                            <div>
+                                <span>מוסיף את</span>
+                                <span>{" " + newPlayerData.name + "..."}</span>
+                            </div> :
                         <div className="buttons_container">
                             <input disabled={newPlayerData.name.length === 0 ? true : false} className="button" type="button" onClick={addNewPlayerBtnClick} value="הוסף"></input>
-                            <input className="button" type="button" onClick={cancelNewPlayer} value="בטל"></input>
+                            {/* <input className="button" type="button" onClick={cancelNewPlayer} value="בטל"></input> */}
                         </div>
                     }
                 </form>

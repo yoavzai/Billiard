@@ -29,7 +29,6 @@ const appReducer = (state = {
                         currentRound: data.newCurrentRound}
 
     case "endGame" :
-      console.log("endGame appReducer")
       return {...state, tables: data.newTables, 
                         participants: data.newParticipants, 
                         currentRound: data.newCurrentRound}
