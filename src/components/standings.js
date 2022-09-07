@@ -1,8 +1,7 @@
 
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import PlayerResults from "./playerResults"
-
+import PlayerResultsComp from "./playerResults"
 
 
 export default function StandingsComp() {
@@ -12,7 +11,17 @@ export default function StandingsComp() {
     const [playerToPresentResults, setPlayerToPresentResults] = useState({})
 
     useEffect(() => {
-        setIsPresentPlayerResults(false)
+        if (isPresentPlayerResults === true) {
+            const presentPlayerResultsButton =  document.getElementById(playerToPresentResults.participantId + "presentResults")
+            if (presentPlayerResultsButton === null) {
+                closePlayerResults()
+            }
+            else (
+                presentPlayerResultsButton.click()
+            )
+            // document.getElementById(playerToPresentResults.participantId + "presentResults").click()
+        } 
+        // setIsPresentPlayerResults(false)
     }, [standings])
 
     function presentPlayerResultsBtnClick(player) {
@@ -22,6 +31,7 @@ export default function StandingsComp() {
 
     function closePlayerResults() {
         setIsPresentPlayerResults(false)
+        setPlayerToPresentResults({})
     }     
     
     return (
@@ -49,14 +59,14 @@ export default function StandingsComp() {
                             <td>{player.wins}</td>
                             <td>{player.losses}</td>
                             <td>{player.plusMinus}</td>
-                            <td><button className="button" onClick={() => presentPlayerResultsBtnClick(player)}>הצג</button></td>
+                            <td><button id={player.participantId + "presentResults"} className="button" onClick={() => presentPlayerResultsBtnClick(player)}>הצג</button></td>
                         </tr>
                     )
                 })}
                 </tbody>
 
             </table>
-            {isPresentPlayerResults && <PlayerResults player={playerToPresentResults} closeComponentFunc={closePlayerResults}></PlayerResults>}
+            {isPresentPlayerResults && <PlayerResultsComp player={playerToPresentResults} closeComponentFunc={closePlayerResults}></PlayerResultsComp>}
         </div>
     )
 }

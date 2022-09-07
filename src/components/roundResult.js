@@ -34,9 +34,7 @@ export default function RoundResultComp(props) {
 
         updateResult(result, 
                      {...newResult, participant1Won: participant1Won, participant2Won: participant2Won},
-                     currentRound, currentTournament, 
-                     players,
-                    participants,
+                     currentRound, currentRound, currentTournament,
                     dispatch)
         setIsEditResult(false)
     }

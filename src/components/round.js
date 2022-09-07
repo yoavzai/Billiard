@@ -1,9 +1,6 @@
 
-// asd;fkjhn
-
 import RoundParticipant from "./roundParticipant";
 import TablesComp from "./tables";
-import RoundResultsComp from "./roundResults";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import {
@@ -150,9 +147,9 @@ export default function RoundComp() {
   }
 
   return (
-    <div className="container round_container">
+    <div>
       {Object.keys(currentRound).length > 0 && (
-        <div>
+        <div className="container round_container">
           <div className="buttons_container">
             <button
               className="button close_button"
@@ -306,7 +303,7 @@ export default function RoundComp() {
 
                 </div> */}
           {currentRound?.data?.isActive && <TablesComp></TablesComp>}
-          <RoundResultsComp></RoundResultsComp>
+          {/* <RoundResultsComp></RoundResultsComp> */}
         </div>
       )}
     </div>

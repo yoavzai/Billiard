@@ -120,13 +120,13 @@ export default function ParticipantsComp() {
                         onChange={searchPlayer}
                         id="choose-players-text-input"
                         value={wantedPlayerName}></input>
-                </div>
+                {wantedPlayerName &&
                 <div>
-                    <ul>
                     {playerOptions.map(p => {
-                        return <li key={p.data.name}><button value={p.data.name} onClick={(e) => {setWantedPlayerName(e.target.value); setPlayerOptions([])}}>{p.data.name}</button></li>
+                        return <span style={{display: "block"}} key={p.data.name} onClick={(e) => {setWantedPlayerName(p.data.name); setPlayerOptions([])}}>{p.data.name}</span>
                     })}
-                    </ul>
+                </div>
+                }
                 </div>
                 {isAddPlayerConfirmation ?
                 <div className="container confirmation_container">

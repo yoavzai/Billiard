@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import RoundComp from "./round"
-import { addRound, getRound, setRound } from "./utils"
+import { addRound, setRound } from "./utils"
 
 
 
@@ -12,7 +12,6 @@ export default function RoundsComp() {
     const currentTournament = useSelector(state => state.currentTournament)
     const rounds = useSelector(state => state.rounds)
     const months = useSelector(state => state.months)
-    const currentRound = useSelector(state => state.currentRound)
     const [isNewRoundConfirmation, setIsNewRoundConfirmation] = useState(false)
     const [isRoundSelected, setIsRoundSelected] = useState(false)
     const [startDate, setStartDate] = useState({fullDate: "", day: "", month: "", year: ""})
@@ -69,7 +68,7 @@ export default function RoundsComp() {
     }
 
     return (
-        <div className="rounds_container">
+        <div className="container rounds_container">
             <h3>בחר סיבוב</h3>
             {rounds.length > 0 ?
                 rounds.map(round => {

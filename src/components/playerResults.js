@@ -1,9 +1,10 @@
 
 import { useSelector } from "react-redux"
+import PlayerResultComp from "./playerResult"
 import { getPlayerByParticipantIdFromStore } from "./utils"
 
 
-export default function PlayerResults(props) {
+export default function PlayerResultsComp(props) {
 
     const player = props.player
     const participants = useSelector(state => state.participants)
@@ -28,6 +29,8 @@ export default function PlayerResults(props) {
                                                   player2Name: player2Name, 
                                                   player2Score: player2Score, 
                                                   won: won,
+                                                  originalParticipantNumber: 1,
+                                                  originalResult: result
                                                   })
             }
             else if (result.participant2.id === player.participantId) {
@@ -41,6 +44,8 @@ export default function PlayerResults(props) {
                                                   player2Name: player2Name,
                                                   player2Score: player2Score,
                                                   won: won,
+                                                  originalParticipantNumber: 2,
+                                                  originalResult: result
                                                   })
             }
         }
@@ -63,26 +68,21 @@ export default function PlayerResults(props) {
                         <span>{" " + roundNumber}</span>
                     </h4>
                     {round[1].length === 0 ?
-                    <span>לא שיחק</span> :
                     <div>
-                    {round[1].map((result, index) => {
-                        return (
-                            <div key={index} className={`result_container ${result.won ? "player_won" : "player_lost"}`}>
-                                <span>{result.player1Name}</span>
-                                <span>{result.player1Score}</span>
-                                <span>{result.player2Name}</span>
-                                <span>{result.player2Score}</span>
-                            </div>
-
-                        )
-                    })}
-
+                        <span>לא שיחק</span> 
+                    </div> :
+                    <div>
+                        {round[1].map((result, index) => {
+                            return (
+                                <PlayerResultComp key={index} result={result} roundNumber={roundNumber}></PlayerResultComp>
+                            )
+                            })
+                        }
                     </div>
                     }
-
                 </div>
-                )
-            })}
+                )})
+            }
         </div>
     )
 } 
