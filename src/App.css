@@ -1,8 +1,4 @@
-body {
-  margin: 20px;
-  direction: rtl;
-  text-align: right;
-}
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 .table_container {
   padding: 5px;
@@ -47,4 +43,208 @@ body {
 
 .player_won {
   border: 2px solid green;
+}
+
+/* 
+Css Start
+*/
+
+body {
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+  text-align: right;
+  font-family: "Heebo", sans-serif;
+  width: 100vw;
+  font-size: 16px;
+}
+
+h2 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 47px;
+  /* identical to box height */
+  text-align: center;
+  margin: 16px 0 32px;
+  color: #000000;
+}
+
+h4 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+input {
+  font-size: 16px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin: 4px 0 16px;
+  border: 1px solid #000;
+}
+
+select {
+  font-size: 16px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin: 4px 0 16px;
+  width: 100%;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+}
+
+.error_message_container {
+  font-size: 14px;
+  color: rgb(212, 65, 28);
+  text-align: center;
+  margin-top: 16px;
+}
+
+.error_message_container button {
+  font-size: 14px;
+  padding: 4px 10px;
+  margin-top: 4px;
+}
+
+.button:hover {
+  -webkit-box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.45);
+}
+.button {
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 16px;
+  background: transparent;
+  border-radius: 50px;
+  border: 1px solid #000;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.27);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.27);
+}
+
+.container {
+  background: #f1f1f1;
+  border: 1px solid #000000;
+  border-radius: 25px;
+  -webkit-box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+  margin: 16px;
+  padding: 16px;
+}
+
+.navigation_menu_container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.navigation_menu_container a:visited,
+.navigation_menu_container a {
+  color: #000;
+  font-weight: 500;
+  margin: 0 16px;
+  font-size: 18px;
+  text-decoration: none;
+  color: #2d6c27;
+}
+
+.navigation_menu_container a:hover {
+  font-weight: 700;
+}
+
+.tournaments_container {
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.tournaments_container .select_container {
+  margin-bottom: 32px;
+  width: 100%;
+  text-align: center;
+}
+
+.tournaments_container .select_container select {
+  font-size: 22px;
+  padding: 10px;
+  border-radius: 6px;
+  width: calc(100% - 40px);
+  max-width: 400px;
+}
+
+.update_player_form_container {
+  display: inline-block;
+}
+
+.players_list_container .list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.players_list_container .list .player_container {
+  padding: 0 16px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+}
+
+.players_list_container .list .player_container .update_player_form_container {
+  background: #f1f1f1;
+  border: 1px solid #000000;
+  border-radius: 25px;
+  -webkit-box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+  margin: 16px;
+  padding: 16px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.players_list_container
+  .list
+  .player_container
+  .players_list_container
+  .list
+  .player_container
+  .buttons_container {
+  display: flex;
+}
+
+.players_list_container .list .player_container button.button {
+  background: url("./edit-246.svg") no-repeat center center;
+  background-size: contain;
+  font-size: 0;
+  padding: 3px;
+  border: none;
+  box-shadow: none;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+
+.players_list_container
+  .list
+  .player_container
+  .update_player_form_container
+  .buttons_container {
+  display: flex;
+  justify-content: space-between;
 }
