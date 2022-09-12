@@ -1,4 +1,3 @@
-
 import RoundParticipant from "./roundParticipant";
 import TablesComp from "./tables";
 import { useDispatch, useSelector } from "react-redux";
@@ -150,15 +149,22 @@ export default function RoundComp() {
     <div>
       {Object.keys(currentRound).length > 0 && (
         <div className="container round_container">
-          <div className="buttons_container">
+          <div className="buttons_container close_button_container">
             <button
               className="button close_button"
               onClick={() => dispatch({ type: "currentRound", payload: {} })}
             >
               סגור
             </button>
+            {currentRound?.data?.isActive && (
+              <div className="buttons_container">
+                <button className="button" onClick={finishRoundBtnClick}>
+                  סיים סיבוב
+                </button>
+              </div>
+            )}
           </div>
-          <h2>
+          <h3>
             <span>סיבוב</span>
             <span>{" " + currentRound.data.number + " - "}</span>
             <span>
@@ -171,15 +177,9 @@ export default function RoundComp() {
                 " "}
             </span>
             <span>{currentRound.data.isActive ? "(פעיל)" : "(הסתיים)"}</span>
-          </h2>
-          <div>
-            {currentRound?.data?.isActive && (
-              <div className="buttons_container">
-                <button className="button" onClick={finishRoundBtnClick}>
-                  סיים סיבוב
-                </button>
-              </div>
-            )}
+          </h3>
+
+          <div className="participants_box container">
             {isFinishRoundErrorMessage && (
               <div className="error_message_container">
                 <span>אי אפשר לסיים סיבוב בזמן שקיימים משחקים פעילים</span>
@@ -212,9 +212,10 @@ export default function RoundComp() {
                 </div>
               </div>
             )}
-            <h3>{`משתתפים נוכחים (${currentRound?.data?.arrivedParticipants?.length})`}</h3>
+
+            <h4>{`משתתפים נוכחים (${currentRound?.data?.arrivedParticipants?.length})`}</h4>
             <div className="arrived_participants_table_container">
-              <table className="table">
+              <table className="table arrived_participants_table">
                 <thead>
                   <tr>
                     <th>שם</th>
@@ -254,7 +255,7 @@ export default function RoundComp() {
                             participant.id
                           ) && (
                             <td>
-                              <ul>
+                              <ul className="possible_rivals_list">
                                 {getOptionalParticipantsIdsToPlay(
                                   currentRound,
                                   participant.id,

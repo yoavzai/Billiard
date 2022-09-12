@@ -38,11 +38,11 @@
 }
 
 .player_lost {
-  border: 2px solid red;
+  background: rgb(241, 205, 205);
 }
 
 .player_won {
-  border: 2px solid green;
+  background: rgb(219, 250, 219);
 }
 
 /* 
@@ -56,18 +56,42 @@ body {
   text-align: right;
   font-family: "Heebo", sans-serif;
   width: 100vw;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+div {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  position: relative;
 }
 
 h2 {
   font-family: "Heebo";
   font-style: normal;
   font-weight: 700;
-  font-size: 32px;
+  font-size: 24px;
   line-height: 47px;
   /* identical to box height */
   text-align: center;
   margin: 16px 0 32px;
+  color: #000000;
+}
+
+h3 {
+  font-family: "Heebo";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+  /* identical to box height */
+  text-align: right;
+  margin: 0px 0 16px;
   color: #000000;
 }
 
@@ -77,17 +101,23 @@ h4 {
   margin: 0 0 16px;
 }
 
+h5 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 14px;
+}
+
 input {
-  font-size: 16px;
-  padding: 4px 12px;
+  font-size: 14px;
+  padding: 3px 12px;
   border-radius: 6px;
   margin: 4px 0 16px;
   border: 1px solid #000;
 }
 
 select {
-  font-size: 16px;
-  padding: 4px 12px;
+  font-size: 14px;
+  padding: 3px 12px;
   border-radius: 6px;
   margin: 4px 0 16px;
   width: 100%;
@@ -118,8 +148,8 @@ label {
 }
 .button {
   font-weight: 500;
-  font-size: 16px;
-  padding: 8px 16px;
+  font-size: 14px;
+  padding: 4px 12px;
   background: transparent;
   border-radius: 50px;
   border: 1px solid #000;
@@ -157,6 +187,18 @@ label {
 
 .navigation_menu_container a:hover {
   font-weight: 700;
+}
+
+.companylogo {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.companylogo img {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin: auto;
 }
 
 .tournaments_container {
@@ -247,4 +289,476 @@ label {
   .buttons_container {
   display: flex;
   justify-content: space-between;
+}
+
+.finish_turnament {
+  margin: 0 16px;
+}
+
+.turnament_dashboard {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 16px;
+}
+
+.turnament_dashboard .container {
+  margin: 16px 0px;
+}
+
+.turnament_dashboard .container.participants_container {
+  width: 100%;
+  order: 1;
+}
+.turnament_dashboard .container.rounds_container {
+  width: calc(50% - 50px);
+}
+.turnament_dashboard .container.standings_container {
+  width: calc(50% - 50px);
+  position: relative;
+}
+
+.round_text_container:hover {
+  background-color: #c8c8c8;
+}
+.round_text_container {
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.rounds_container button {
+  margin-top: 16px;
+}
+
+.turnament_dashboard .container.round_container {
+  position: fixed;
+  z-index: 2;
+  top: 16px;
+  right: 16px;
+  width: calc(100% - 64px);
+  height: calc(100vh - 100px);
+  overflow: auto;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.turnament_dashboard .container.round_container .close_button_container button {
+  margin: 0;
+  background: #f1f1f1;
+  z-index: 3;
+}
+.turnament_dashboard .container.round_container .close_button_container {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+}
+
+.turnament_dashboard
+  .container.round_container
+  .close_button_container
+  .close_button {
+  margin-left: 10px;
+}
+
+.turnament_dashboard .container.round_container h3 {
+  width: 100%;
+  margin-top: 28px;
+  text-align: center;
+}
+
+.turnament_dashboard .container.round_container .participants_box {
+  width: 33%;
+}
+
+.round_container .tables_container {
+  width: 60%;
+}
+
+.round_container .tables_container .tabels_grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.round_container .tables_container .tabels_grid .table_container {
+  margin: 4px;
+  padding: 16px;
+  border-radius: 6px;
+  width: calc(33% - 45px);
+}
+
+.round_container .tables_container .tabels_grid .table_container button {
+  margin-top: 0;
+}
+
+.turnament_dashboard .container.standings_container tr {
+  padding: 8px 0;
+}
+
+.turnament_dashboard .container.standings_container th,
+.turnament_dashboard .container.standings_container td {
+  padding: 0 10px;
+}
+
+.turnament_dashboard .container.standings_container td button {
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: url("./eye-svgrepo-com.svg") no-repeat center center;
+  background-size: contain;
+  box-shadow: none;
+  border: none;
+}
+
+.player_results_container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: calc(100% - 60px);
+  height: auto;
+  z-index: 4;
+}
+
+.player_results_container .buttons_container {
+  text-align: left;
+}
+
+.player_round_results_container {
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid gray;
+}
+
+.turnament_dashboard .error_message_container {
+  text-align: right;
+}
+
+.player_round_results_container .edit_result_container {
+  background-color: rgb(219, 248, 248);
+}
+
+.player_round_results_container .edit_result_container,
+.player_round_results_container .result_container {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.player_round_results_container
+  .edit_result_container
+  .text_input_container
+  span {
+  margin-left: 6px;
+}
+
+.player_round_results_container
+  .edit_result_container
+  .text_input_container
+  input {
+  margin-bottom: 6px;
+  width: 50px;
+}
+
+.standings_container .button {
+  margin-right: 14px;
+}
+
+.player_result_row span {
+  margin-left: 14px;
+}
+
+.arrived_participants_table th,
+.arrived_participants_table td {
+  padding: 0 10px;
+}
+.arrived_participants_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.arrived_participants_table tr {
+  border-bottom: 1px solid #000;
+}
+
+.possible_rivals_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.possible_rivals_list li {
+  margin-left: 10px;
+}
+
+.turnament_dashboard .participants_table {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 32px;
+  position: relative;
+}
+
+.turnament_dashboard .participants_table .participant_box {
+  margin: 6px;
+  position: relative;
+  width: 16%;
+}
+
+.turnament_dashboard .participants_table .participant_box .delete_button {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background: url("./delete-icon.svg") no-repeat center center;
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+  font-size: 0;
+  border-radius: 0;
+  display: block;
+}
+
+.turnament_dashboard .participants_table .participant_box .edit_button {
+  background: url("./edit-246.svg") no-repeat center center;
+  background-size: contain;
+  font-size: 0;
+  padding: 3px;
+  border: none;
+  box-shadow: none;
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+}
+
+.turnament_dashboard .participants_table .active_participant_container {
+  display: flex;
+  position: relative;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .buttons_container {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  display: flex;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .update_player_form_container {
+  z-index: 4;
+  position: absolute;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .update_player_form_container
+  .buttons_container {
+  position: static;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.turnament_dashboard .participants_table .buttons_container {
+  display: flex;
+}
+
+.turnament_dashboard .participants_table .active_participant_container > span {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .confirmation_container {
+  position: absolute;
+  z-index: 4;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .confirmation_container
+  .buttons_container {
+  position: static;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.turnament_dashboard
+  .participants_table
+  .active_participant_container
+  .confirmation_container
+  .buttons_container
+  .yes_button {
+  background: rgb(237, 175, 175);
+}
+
+.turnament_dashboard
+  .participants_table
+  .games_left_container
+  .buttons_container {
+  margin-top: 16px;
+}
+
+.turnament_dashboard
+  .participants_table
+  .games_left_container
+  .participants_to_play_list_container {
+  position: absolute;
+  width: 100%;
+  top: calc(100% - 32px);
+  right: 0;
+  z-index: 3;
+  max-width: 500px;
+}
+
+.turnament_dashboard
+  .participants_table
+  .games_left_container
+  .participants_to_play_list_container
+  ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 3;
+}
+
+.turnament_dashboard
+  .participants_table
+  .games_left_container
+  .participants_to_play_list_container
+  ul
+  li {
+  margin: 0 10px;
+}
+
+.free_table_container,
+.table_container {
+  position: relative;
+}
+.free_table_container .buttons_container.float_buttons {
+  position: absolute;
+  left: -7px;
+  top: -10px;
+}
+
+.free_table_container .buttons_container.float_buttons button {
+  font-size: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  box-shadow: none;
+}
+
+.free_table_container .confirmation_container {
+  position: relative;
+  z-index: 1;
+  position: absolute;
+}
+
+.unlock_container {
+  position: absolute;
+  top: 6px;
+  left: 9px;
+}
+
+.unfreeze_button:hover {
+  box-shadow: none;
+}
+.unfreeze_button {
+  font-size: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  box-shadow: none;
+  background: url("./unlock-icon.svg") no-repeat center center;
+  background-size: contain;
+}
+
+.free_table_container .confirmation_container .buttons_container {
+  margin-top: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.free_table_container .confirmation_container .buttons_container .yes_button {
+  background: rgb(237, 175, 175);
+}
+
+.free_table_container .buttons_container button.delete_button {
+  background: url("./delete-icon.svg") no-repeat center center;
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+}
+
+.free_table_container .buttons_container button.freeze_button {
+  background: url("./lock-icon.svg") no-repeat center center;
+  background-size: contain;
+}
+
+.table_buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.add_participant_container.the_one .drop_box {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.add_participant_container.the_one .drop_box input {
+  margin-bottom: 0;
+}
+
+.add_participant_container.the_one .drop_box .drop_list:empty {
+  border: none;
+  padding: 0;
+}
+.add_participant_container.the_one .drop_box .drop_list {
+  border: 2px solid rgb(80, 80, 177);
+  padding: 6px;
+  max-width: 350px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 185px;
+  background: #fff;
+  z-index: 2;
+}
+
+.add_participant_container.the_one .drop_box .drop_list span {
+  cursor: pointer;
+}
+
+.add_participant_container.the_one .drop_box .drop_list span:hover {
+  background-color: rgba(0, 132, 255, 0.621);
 }

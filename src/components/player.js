@@ -48,7 +48,7 @@ export default function PlayerComp(props) {
         </button>
       </div>
       {isUpdatePlayer && (
-        <div className="update_player_form_container">
+        <div className="update_player_form_container ">
           <form>
             <div className="text_input_container">
               <label htmlFor="name">שם</label>
