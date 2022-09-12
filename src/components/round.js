@@ -163,6 +163,25 @@ export default function RoundComp() {
                 </button>
               </div>
             )}
+            {isFinishRoundConfirmation && (
+              <div className="confirmation_container container finish_round_confirmation">
+                <span>האם אתה בטוח שברצונך לסיים את הסיבוב?</span>
+                <div className="buttons_container">
+                  <button
+                    className="button yes_button"
+                    onClick={finishRoundConfirmed}
+                  >
+                    כן
+                  </button>
+                  <button
+                    className="button no_button"
+                    onClick={() => setIsFinishRoundConfirmation(false)}
+                  >
+                    לא
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <h3>
             <span>סיבוב</span>
@@ -189,25 +208,6 @@ export default function RoundComp() {
                     onClick={() => setIsFinishRoundErrorMessage(false)}
                   >
                     Ok
-                  </button>
-                </div>
-              </div>
-            )}
-            {isFinishRoundConfirmation && (
-              <div className="confirmation_container">
-                <span>האם אתה בטוח שברצונך לסיים את הסיבוב?</span>
-                <div className="buttons_container">
-                  <button
-                    className="button yes_button"
-                    onClick={finishRoundConfirmed}
-                  >
-                    כן
-                  </button>
-                  <button
-                    className="button no_button"
-                    onClick={() => setIsFinishRoundConfirmation(false)}
-                  >
-                    לא
                   </button>
                 </div>
               </div>

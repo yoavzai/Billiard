@@ -762,3 +762,17 @@ label {
 .add_participant_container.the_one .drop_box .drop_list span:hover {
   background-color: rgba(0, 132, 255, 0.621);
 }
+
+.finish_round_confirmation {
+  position: absolute;
+  z-index: 3;
+}
+
+.finish_round_confirmation .buttons_container .yes_button {
+  background: rgb(237, 175, 175) !important;
+}
+.finish_round_confirmation .buttons_container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
