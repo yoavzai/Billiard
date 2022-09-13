@@ -759,8 +759,11 @@ label {
   cursor: pointer;
 }
 
+.add_participant_container.the_one .drop_box .drop_list span:focus,
 .add_participant_container.the_one .drop_box .drop_list span:hover {
   background-color: rgba(0, 132, 255, 0.621);
+  border: none;
+  outline: none;
 }
 
 .finish_round_confirmation {

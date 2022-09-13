@@ -149,6 +149,7 @@ export default function ParticipantsComp() {
                   {playerOptions.map((p) => {
                     return (
                       <span
+                        tabindex="0"
                         style={{ display: "block" }}
                         key={p.data.name}
                         onClick={(e) => {
