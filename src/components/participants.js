@@ -27,6 +27,7 @@ export default function ParticipantsComp() {
   const [addPlayerErrorMessage, setAddPlayerErrorMessage] = useState("");
   const [playerOptions, setPlayerOptions] = useState([]);
   const [isAddingToServer, setIsAddingToServer] = useState(false);
+  const [isPresentPlayerOptions, setIsPresentPlayerOptions] = useState(false);
 
   async function addNewPlayer() {
     setIsAddPlayer(false);
@@ -96,6 +97,7 @@ export default function ParticipantsComp() {
     setIsAddPlayerErrorMessage(false);
     setWantedPlayerName(e.target.value);
     if (e.target.value.length === 0) {
+      setIsPresentPlayerOptions(false)
       setPlayerOptions([]);
       return;
     }
@@ -104,7 +106,8 @@ export default function ParticipantsComp() {
       playersNotRegistered(players, participants).filter((player) =>
         player.data.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       )
-    );
+      );
+      setIsPresentPlayerOptions(true)
   }
 
   function cancelNewPlayer() {
@@ -126,6 +129,49 @@ export default function ParticipantsComp() {
     return sorted;
   }
 
+  function searchPlayerKeyPress(e) {
+    if (playerOptions.length === 0) {
+      return
+    }
+    if (e.code === "ArrowDown") {
+      e.preventDefault()
+      const firstOption = document.getElementById("player_options0")
+      firstOption.focus()
+    }
+  }
+
+  function playerOptionKeyPress(e) {
+    e.preventDefault()
+    const playerOptionIndex = Number(e.target.id[e.target.id.length - 1])
+    if (e.code === "ArrowDown") {
+      if (playerOptions.length - 1 === playerOptionIndex) {
+        return
+      }
+      const nextOptionId = "player_options" + String(playerOptionIndex+1)
+      const nextOption = document.getElementById(nextOptionId)
+      nextOption.focus()
+    }
+    else if (e.code === "ArrowUp") {
+      if (playerOptionIndex === 0) {
+        const searchInput = document.getElementById("choose-players-text-input")
+        searchInput.focus()
+      }
+      else {
+        const prevOptionId = "player_options" + String(playerOptionIndex-1)
+        const prevOption = document.getElementById(prevOptionId)
+        prevOption.focus()
+      }
+    }
+    else if (e.code === "Escape") {
+      setIsPresentPlayerOptions(false)
+      const searchInput = document.getElementById("choose-players-text-input")
+      searchInput.focus()
+    }
+    else if(e.code === "Enter") {
+      e.target.click()
+    }
+  }
+
   return (
     <div className="container participants_container">
       <h3>
@@ -141,20 +187,25 @@ export default function ParticipantsComp() {
                 className={`${isAddPlayerErrorMessage ? "error_input" : ""}`}
                 type="text"
                 onChange={searchPlayer}
+                onKeyDown={searchPlayerKeyPress}
                 id="choose-players-text-input"
                 value={wantedPlayerName}
               ></input>
-              {wantedPlayerName && (
+              {isPresentPlayerOptions && (
                 <div className="drop_list">
-                  {playerOptions.map((p) => {
+                  {playerOptions.map((p, i) => {
                     return (
                       <span
-                        tabindex="0"
+                        id={"player_options"+i}
+                        tabIndex="0"
                         style={{ display: "block" }}
                         key={p.data.name}
+                        onKeyDown={playerOptionKeyPress}
+                        onMouseEnter={e => e.target.focus()}
                         onClick={(e) => {
                           setWantedPlayerName(p.data.name);
                           setPlayerOptions([]);
+                          setIsPresentPlayerOptions(false)
                         }}
                       >
                         {p.data.name}

@@ -49,13 +49,18 @@ export default function GamesLeftComp(props) {
               .map((participantId) => {
                 return (
                   <li key={participantId}>
-                    {
-                      getPlayerByParticipantIdFromStore(
-                        participantId,
-                        participants,
-                        players
-                      )?.data?.name
-                    }
+                    <span>
+                      {
+                        getPlayerByParticipantIdFromStore(
+                          participantId,
+                          participants,
+                          players
+                        )?.data?.name
+                      }
+                    </span>
+                    <span>
+                      ,
+                    </span>
                   </li>
                 );
               })}

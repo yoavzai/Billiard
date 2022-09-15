@@ -29,6 +29,10 @@ export default function PlayerComp(props) {
   }
 
   function editPlayer() {
+    const cancelEditPlayerButtons = document.getElementsByClassName("cancel_edit_player")
+    for (const b of cancelEditPlayerButtons) {
+      b.click()
+    }
     setPlayerNewData({ name: player.data.name, ranking: player.data.ranking });
     setIsUpdtaePlayer(true);
   }
@@ -93,7 +97,7 @@ export default function PlayerComp(props) {
                 value="עדכן"
               ></input>
               <input
-                className="button"
+                className="button cancel_edit_player"
                 type="button"
                 onClick={cancelEditPlayer}
                 value="בטל"

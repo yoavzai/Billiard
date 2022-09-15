@@ -33,6 +33,10 @@
   color: red;
 }
 
+.red {
+  color: red;
+}
+
 .error_input {
   border: 2px solid red;
 }
@@ -408,6 +412,7 @@ label {
   padding: 0;
   margin: 0;
   margin-right: 10px;
+  margin-bottom: 8px;
   width: 20px;
   height: 20px;
   cursor: pointer;

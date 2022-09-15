@@ -35,6 +35,7 @@ export default function RoundsComp() {
         await setRound(currentTournament.id, roundId, dispatch)
         setIsLoadingNewround(false)
         setIsRoundSelected(true)
+        document.body.classList.add("round_open")
     }
 
 

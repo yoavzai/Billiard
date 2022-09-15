@@ -8,6 +8,8 @@ import {
   getPlayerByParticipantIdFromStore,
   isParticipantAvailable,
 } from "./utils";
+import RoundResultsComp from "./roundResults";
+import { useEffect } from "react";
 
 export default function RoundComp() {
   const dispatch = useDispatch();
@@ -22,7 +24,9 @@ export default function RoundComp() {
   const [isFinishRoundConfirmation, setIsFinishRoundConfirmation] =
     useState(false);
   // const [newGameData, setNewGameData] = useState({tableNum: "", participant1Id: "", participant2Id: ""})
+  
 
+      
   function finishRoundBtnClick() {
     for (const table of tables) {
       if (table.data.isTaken) {
@@ -145,6 +149,11 @@ export default function RoundComp() {
     return table === undefined ? "" : table.data.number;
   }
 
+  function closeRoundBtnClick() {
+    dispatch({ type: "currentRound", payload: {} })
+    document.body.classList.remove("round_open")
+  }
+
   return (
     <div>
       {Object.keys(currentRound).length > 0 && (
@@ -152,7 +161,7 @@ export default function RoundComp() {
           <div className="buttons_container close_button_container">
             <button
               className="button close_button"
-              onClick={() => dispatch({ type: "currentRound", payload: {} })}
+              onClick={closeRoundBtnClick}
             >
               סגור
             </button>
@@ -269,7 +278,14 @@ export default function RoundComp() {
                                       players
                                     );
                                   return (
-                                    <li key={index}>{player.data.name}</li>
+                                    <li key={index}>
+                                      <span>
+                                        {player.data.name}
+                                      </span>
+                                      <span>
+                                        ,
+                                      </span>
+                                      </li>
                                   );
                                 })}
                               </ul>
@@ -303,8 +319,10 @@ export default function RoundComp() {
                     </input>
 
                 </div> */}
-          {currentRound?.data?.isActive && <TablesComp></TablesComp>}
-          {/* <RoundResultsComp></RoundResultsComp> */}
+          {currentRound?.data?.isActive ?
+          <TablesComp></TablesComp> :
+          <RoundResultsComp></RoundResultsComp>
+          }
         </div>
       )}
     </div>
