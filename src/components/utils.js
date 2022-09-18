@@ -600,6 +600,7 @@ export async function addRound(tourId, newRoundData, dispatch) {
     const newRound = await getRoundByIdFromServer(tourId, newRoundRef.id)
     const newRounds = await getTournamentBasicRoundsDataFromServer(tourId)
     dispatch({type: "newRound", payload: {newRound: newRound, newRounds: newRounds}})
+    return newRound
 }
 
 export async function addParticipant(participantData, tourId, participants, dispatch) {
@@ -610,7 +611,7 @@ export async function addParticipant(participantData, tourId, participants, disp
     newParticipants.push({id: newParticipantRef.id, data: participantData})
     dispatch({type: "participants", payload: newParticipants})
     for (const p of participants) {
-        updateParticipantOnServer(tourId, p.id, {...p.data, participantsToPlayIds: [...p.data.participantsToPlayIds, newParticipantRef.id]})
+        await updateParticipantOnServer(tourId, p.id, {...p.data, participantsToPlayIds: [...p.data.participantsToPlayIds, newParticipantRef.id]})
     }
     
     // newParticipants = await getTournamentParticipantsFromServer(tourId)
@@ -1123,3 +1124,155 @@ export function isParticipantAvailable(currentRound, participantId) {
     }
     return isArrived && isFree
 }
+
+
+
+// async function loadPlayersFromExcel(players, dispatch) {
+//     let playersStr = `עמית שרר
+//     שלמה ברזילאי
+//     אולג שמואלוב
+//     מיכאל פוקישנסקי
+//     חיים דניאל
+//     עידן אוחיון
+//     אבי כהן
+//     מרסל ינקו
+//     סלבה חפץ
+//     אמיר ביבי
+//     תומר מנדלס
+//     עידו דוד
+//     תומר נאמן
+//     שמעון בר אשר
+//     אלי זילברשטיין
+//     נתנאל ברוך
+//     ניר שרוני
+//     שמוליק כהן
+//     אודי שפרן
+//     אהרון שובל
+//     דניאל זיגלר
+//     יותם בר אשר
+//     יורי פרנקל
+//     תומר ביבי
+//     אוראל ששון
+//     בוריס אורצקי
+//     יואב זיידנברג
+//     יובל זילבר
+//     אייל אורן
+//     ירון טל
+//     שי אברהם
+//     יבגני גיללך`.split('\n')
+
+//     for (let player of playersStr) {
+//         const time = new Date()
+//         const data = {"name": player.trim(), "ranking": "B", "time": time.getTime()}
+//         await addPlayer(data, players, dispatch)
+//     }
+// }
+
+// async function loadTournamentFromExcel(months, navigate, dispatch) {
+//     const newDate = new Date();
+//     const newMonth = newDate.getMonth();
+//     const newYear = newDate.getFullYear();
+//     const newTime = newDate.getTime();
+//     const startDate = { fullDate: newTime, month: months[newMonth], year: newYear };
+
+//     const tourId = await addTournament(
+//         { startDate: startDate, isActive: true },
+//         dispatch
+//       );
+//       navigate("/tournament/" + tourId);
+// }
+
+// export async function addParticipantsFromExcel(tourId) {
+//     const players = await getPlayersFromServer()
+//     for (const player of players) {
+//         const participants = await getTournamentParticipantsFromServer(tourId)
+//         const time = new Date();
+//         const newParticipantData = {
+//           playerId: player.id,
+//           date: time.getTime(),
+//           participantsToPlayIds: participants.map((participant) => participant.id),
+//         };
+//         const newParticipantRef = await addNewParticipantOnServer(tourId, newParticipantData)
+//         let newParticipants = participants.map(p => {
+//             return {...p, data: {...p.data, participantsToPlayIds: [...p.data.participantsToPlayIds, newParticipantRef.id]}}
+//         })
+//         newParticipants.push({id: newParticipantRef.id, data: newParticipantData})
+//         for (const p of participants) {
+//             await updateParticipantOnServer(tourId, p.id, {...p.data, participantsToPlayIds: [...p.data.participantsToPlayIds, newParticipantRef.id]})
+//         }
+
+//     }
+// }
+
+
+// async function addRoundFromExcel(tourId, months, roundNumber) {
+
+//     const newDate = new Date()
+//     const newMonth = newDate.getMonth()
+//     const newYear = newDate.getFullYear()
+//     const newDay = newDate.getDate()
+//     const newTime = newDate.getTime()
+    
+//     const startDate  = {fullDate: newTime, day: newDay, month: months[newMonth], year: newYear}
+//     const newRoundData = {startDate: startDate, number: roundNumber, arrivedParticipants: [], results: [], isActive: false}
+//     const newRoundRef = await addRoundOnServer(tourId, newRoundData)
+//     const newRound = await getRoundByIdFromServer(tourId, newRoundRef.id)
+//     return newRound
+// }
+
+
+
+
+// export async function addRoundResultsFromExcel(tourId, months, roundNumber, results) {
+
+//     let round = await addRoundFromExcel(tourId, months, roundNumber)
+//     const players = await getPlayersFromServer()
+//     let participants = await getTournamentParticipantsFromServer(tourId)
+//     const newResults = []
+
+//     results = results.split('\n').map(r => r.split('\t'))
+//     for (const r of results) {
+//         r[0] = r[0].trim()
+//     }
+
+//     for (const r of results) {
+
+//         const participant1Id = getParticipantByNameFromStore(r[0], participants, players).id
+//         const participant2Id = getParticipantByNameFromStore(r[1], participants, players).id
+//         const participant1Score = Number(r[2])
+//         const participant2Score = Number(r[3])
+//         const participant1Won = participant1Score > participant2Score ? true : false
+//         const participant2Won = !participant1Won
+//         const participant1Data = {id: participant1Id, score: participant1Score, won: participant1Won}
+//         const participant2Data = {id: participant2Id, score: participant2Score, won: participant2Won}
+    
+//         newResults.push({id: participant1Id + participant2Id,
+//                                                   participant1: participant1Data,
+//                                                   participant2: participant2Data,
+//                                                   roundNumber: round.data.number})
+    
+    
+//         participants = participants.map(p => {
+//             if (p.id === participant1Id) {
+//                 const updatedParticipantsToPlayIds = p.data.participantsToPlayIds.filter(id => id !== participant2Id)
+//                 return ({...p, data: {...p.data, participantsToPlayIds: updatedParticipantsToPlayIds}})
+//             }
+     
+//             if (p.id === participant2Id) {
+//                 const updatedParticipantsToPlayIds = p.data.participantsToPlayIds.filter(id => id !== participant1Id)
+//                 return ({...p, data: {...p.data, participantsToPlayIds: updatedParticipantsToPlayIds}})
+//             }
+//             return p
+//         })
+    
+//         const roundNewData = {...round.data, arrivedParticipants: participants, results: newResults}
+//         round = {...round, data: roundNewData}
+        
+//     }
+
+//     await updateRoundOnServer(tourId, round.id, round.data)
+//     for (const p of participants) {
+//         await updateParticipantOnServer(tourId, p.id, p.data)
+//     }
+
+// }

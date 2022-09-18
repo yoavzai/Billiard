@@ -621,7 +621,19 @@ label {
   .games_left_container
   .buttons_container {
   margin-top: 16px;
+  display: inline-block;
+  margin-right: 16px;
 }
+
+.possible_rivals_container
+  .buttons_container {
+    margin-bottom: 10px;
+  }
+
+.round_participant_container input{
+  margin-right: 5px;
+
+} 
 
 .turnament_dashboard
   .participants_table

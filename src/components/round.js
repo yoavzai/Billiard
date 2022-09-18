@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import {
   endRound,
+  gamesLeftAboveAvarge,
   getOptionalParticipantsIdsToPlay,
   getPlayerByParticipantIdFromStore,
   isParticipantAvailable,
 } from "./utils";
 import RoundResultsComp from "./roundResults";
 import { useEffect } from "react";
+import { RoundParticipantPossibleRivalsComp } from "./roundParticipantPossibleRivals";
 
 export default function RoundComp() {
   const dispatch = useDispatch();
@@ -230,6 +232,7 @@ export default function RoundComp() {
                     <th>שם</th>
                     {currentRound.data.isActive && <th>שולחן</th>}
                     {currentRound.data.isActive && <th>יריבים אפשריים</th>}
+                    {currentRound.data.isActive && <th>משחקים שנותרו</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -264,33 +267,26 @@ export default function RoundComp() {
                             participant.id
                           ) && (
                             <td>
-                              <ul className="possible_rivals_list">
-                                {getOptionalParticipantsIdsToPlay(
-                                  currentRound,
-                                  participant.id,
-                                  participants,
-                                  players
-                                ).map((participantId, index) => {
-                                  const player =
-                                    getPlayerByParticipantIdFromStore(
-                                      participantId,
-                                      participants,
-                                      players
-                                    );
-                                  return (
-                                    <li key={index}>
-                                      <span>
-                                        {player.data.name}
-                                      </span>
-                                      <span>
-                                        ,
-                                      </span>
-                                      </li>
-                                  );
-                                })}
-                              </ul>
+                              <RoundParticipantPossibleRivalsComp participant={participant}></RoundParticipantPossibleRivalsComp>
                             </td>
                           )}
+                        {currentRound.data.isActive &&
+                          isParticipantAvailable(
+                            currentRound,
+                            participant.id
+                          ) && (
+                            <td>
+                              <span
+                                className={`${
+                                  gamesLeftAboveAvarge(participants, participant) ? "red" : ""
+                                }`}
+                              >
+                                {participant?.data?.participantsToPlayIds.length}
+                              </span>
+                            </td>
+                          )
+       
+                        }
                       </tr>
                     );
                   })}
