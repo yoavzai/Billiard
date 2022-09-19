@@ -615,6 +615,11 @@ body.round_open::before {
   width: 16%;
 }
 
+.difference {
+  direction: ltr;
+  display: inline-block;
+}
+
 .turnament_dashboard .participants_table .participant_box .delete_button {
   border: none;
   box-shadow: none;

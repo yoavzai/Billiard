@@ -54,7 +54,7 @@ export default function StandingsComp() {
                 <td>{player.games}</td>
                 <td>{player.wins}</td>
                 <td>{player.losses}</td>
-                <td>{player.plusMinus}</td>
+                <td><span className="difference">{player.plusMinus}</span></td>
                 <td>
                   <button
                     id={player.participantId + "presentResults"}
