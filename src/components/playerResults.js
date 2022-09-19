@@ -61,7 +61,7 @@ export default function PlayerResultsComp(props) {
     <div className="container player_results_container">
       <div className="buttons_container">
         <button
-          className="button close_button"
+          className="button close_button close_results"
           onClick={() => props.closeComponentFunc()}
         >
           סגור

@@ -104,7 +104,7 @@ export default function TournamentsComp() {
         </button>
       </div>
       {isNewTournamentConfirmation && (
-        <div className="confirmation_container">
+        <div className="confirmation_container center">
           <span>להתחיל טורניר</span>
           <span>{" " + startDate.month + " " + startDate.year}</span>
           <span>?</span>

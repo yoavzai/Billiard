@@ -154,6 +154,7 @@ export default function TableComp(props) {
           <div>
             <span>מספר שולחן</span>
             <input
+              className="ta_num"
               type="text"
               onChange={(e) =>
                 updateTableNumber(table, tables, e.target.value, dispatch)
@@ -202,6 +203,7 @@ export default function TableComp(props) {
           <div>
             <span>מספר שולחן</span>
             <input
+              className="ta_num"
               type="text"
               onChange={(e) =>
                 updateTableNumber(table, tables, e.target.value, dispatch)
@@ -242,6 +244,7 @@ export default function TableComp(props) {
           <div>
             <span>מספר שולחן</span>
             <input
+              className="ta_num"
               type="text"
               onChange={(e) =>
                 updateTableNumber(table, tables, e.target.value, dispatch)

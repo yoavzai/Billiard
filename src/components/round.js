@@ -26,9 +26,7 @@ export default function RoundComp() {
   const [isFinishRoundConfirmation, setIsFinishRoundConfirmation] =
     useState(false);
   // const [newGameData, setNewGameData] = useState({tableNum: "", participant1Id: "", participant2Id: ""})
-  
 
-      
   function finishRoundBtnClick() {
     for (const table of tables) {
       if (table.data.isTaken) {
@@ -152,8 +150,8 @@ export default function RoundComp() {
   }
 
   function closeRoundBtnClick() {
-    dispatch({ type: "currentRound", payload: {} })
-    document.body.classList.remove("round_open")
+    dispatch({ type: "currentRound", payload: {} });
+    document.body.classList.remove("round_open");
   }
 
   return (
@@ -229,17 +227,23 @@ export default function RoundComp() {
               <table className="table arrived_participants_table">
                 <thead>
                   <tr>
-                    <th>שם</th>
-                    {currentRound.data.isActive && <th>שולחן</th>}
-                    {currentRound.data.isActive && <th>יריבים אפשריים</th>}
-                    {currentRound.data.isActive && <th>משחקים שנותרו</th>}
+                    <th className="pa_name">שם</th>
+                    {currentRound.data.isActive && (
+                      <th className="t_num">שולחן</th>
+                    )}
+                    {currentRound.data.isActive && (
+                      <th className="opp_info">יריבים אפשריים</th>
+                    )}
+                    {currentRound.data.isActive && (
+                      <th className="left_games">משחקים שנותרו</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {sortedRoundParticipants().map((participant) => {
                     return (
                       <tr key={participant.id}>
-                        <td>
+                        <td className="pa_name">
                           <RoundParticipant
                             participant={participant}
                             name={
@@ -253,7 +257,7 @@ export default function RoundComp() {
                           ></RoundParticipant>
                         </td>
                         {currentRound.data.isActive && (
-                          <td>
+                          <td className="t_num">
                             {getParticipantTableNumber(participant.id)}
                             {/* <RoundParticipantTableComp 
                                                 participant={participant}
@@ -266,8 +270,10 @@ export default function RoundComp() {
                             currentRound,
                             participant.id
                           ) && (
-                            <td>
-                              <RoundParticipantPossibleRivalsComp participant={participant}></RoundParticipantPossibleRivalsComp>
+                            <td className="opp_info">
+                              <RoundParticipantPossibleRivalsComp
+                                participant={participant}
+                              ></RoundParticipantPossibleRivalsComp>
                             </td>
                           )}
                         {currentRound.data.isActive &&
@@ -275,18 +281,24 @@ export default function RoundComp() {
                             currentRound,
                             participant.id
                           ) && (
-                            <td>
+                            <td className="left_games">
                               <span
                                 className={`${
-                                  gamesLeftAboveAvarge(participants, participant) ? "red" : ""
+                                  gamesLeftAboveAvarge(
+                                    participants,
+                                    participant
+                                  )
+                                    ? "red"
+                                    : ""
                                 }`}
                               >
-                                {participant?.data?.participantsToPlayIds.length}
+                                {
+                                  participant?.data?.participantsToPlayIds
+                                    .length
+                                }
                               </span>
                             </td>
-                          )
-       
-                        }
+                          )}
                       </tr>
                     );
                   })}
@@ -315,10 +327,11 @@ export default function RoundComp() {
                     </input>
 
                 </div> */}
-          {currentRound?.data?.isActive ?
-          <TablesComp></TablesComp> :
-          <RoundResultsComp></RoundResultsComp>
-          }
+          {currentRound?.data?.isActive ? (
+            <TablesComp></TablesComp>
+          ) : (
+            <RoundResultsComp></RoundResultsComp>
+          )}
         </div>
       )}
     </div>

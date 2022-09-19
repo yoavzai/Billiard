@@ -69,7 +69,7 @@ export default function TournamentComp() {
             </div>
           )}
           {isFinishTournamentErrorMessage && (
-            <div className="error_message_container">
+            <div className="error_message_container end_tu_error finish_turnament">
               <span>אי אפשר לסיים טורניר בזמן שקיים סיבוב פעיל</span>
               <div className="buttons_container">
                 <button
@@ -82,9 +82,9 @@ export default function TournamentComp() {
             </div>
           )}
           {isFinishTournamentConfirmation && (
-            <div className="confirmation_container">
+            <div className="confirmation_container right finish_turnament">
               <span>האם אתה בטוח שברצונך לסיים את הטורניר?</span>
-              <div className="buttons_contianer">
+              <div className="buttons_container">
                 <button
                   className="button yes_button"
                   onClick={finishTournamentConfirmed}

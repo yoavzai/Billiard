@@ -337,16 +337,36 @@ label {
 .turnament_dashboard .container.round_container {
   position: fixed;
   z-index: 2;
-  top: 16px;
-  right: 16px;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
   width: calc(100% - 64px);
-  height: calc(100vh - 100px);
+  height: calc(100vh - 80px);
   overflow: auto;
   margin: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  z-index: 10;
 }
+
+body.round_open {
+  overflow: hidden;
+  position: relative;
+}
+
+body.round_open::before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9;
+}
+
 .turnament_dashboard .container.round_container .close_button_container button {
   margin: 0;
   background: #f1f1f1;
@@ -374,11 +394,13 @@ label {
 }
 
 .turnament_dashboard .container.round_container .participants_box {
-  width: 33%;
+  width: 41%;
+  height: auto;
+  min-height: 100%;
 }
 
 .round_container .tables_container {
-  width: 60%;
+  width: 54%;
 }
 
 .round_container .tables_container .tabels_grid {
@@ -431,8 +453,46 @@ label {
   z-index: 4;
 }
 
-.player_results_container .buttons_container {
+.player_results_container .result_container > .buttons_container {
   text-align: left;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}
+
+.close_results {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+}
+
+.end_tu_error {
+  text-align: right;
+}
+
+.confirmation_container .buttons_container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.confirmation_container {
+  background: #f1f1f1;
+  border: 1px solid #000000;
+  border-radius: 25px;
+  box-shadow: 0px 0px 8px 1px rgb(0 0 0 / 20%);
+  margin: 16px;
+  padding: 16px;
+  display: inline-block;
+  z-index: 3;
+  margin: 16px 0;
+}
+.confirmation_container.center {
+  text-align: center;
+  margin-top: 16px;
+}
+.confirmation_container.right {
+  text-align: right;
+  margin-top: 16px;
 }
 
 .player_round_results_container {
@@ -454,6 +514,7 @@ label {
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 6px;
+  position: relative;
 }
 
 .player_round_results_container
@@ -481,7 +542,42 @@ label {
 
 .arrived_participants_table th,
 .arrived_participants_table td {
+  padding: 10px 10px;
+  text-align: center;
+}
+
+.ta_num {
+  font-size: 18px;
   padding: 0 10px;
+  font-weight: bold;
+  margin-right: 5px;
+  min-width: 25px;
+}
+
+.possible_rivals_container .possible_rivals_list {
+  margin: 10px 16px;
+  font-size: 12px;
+}
+.possible_rivals_container {
+  display: flex;
+  align-items: center;
+}
+
+.arrived_participants_table .opp_info {
+  text-align: right;
+}
+.arrived_participants_table .pa_name label {
+  white-space: nowrap;
+}
+.arrived_participants_table .pa_name {
+  width: 20%;
+}
+.possible_rivals_list li:last-child span:last-child {
+  display: none;
+}
+.arrived_participants_table .left_games,
+.arrived_participants_table .t_num {
+  width: 70px;
 }
 .arrived_participants_table {
   width: 100%;
@@ -625,15 +721,26 @@ label {
   margin-right: 16px;
 }
 
-.possible_rivals_container
-  .buttons_container {
-    margin-bottom: 10px;
-  }
+.possible_rivals_container .buttons_container button.info_button {
+  box-shadow: none;
+  border: none;
+  font-size: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: url("./eye-svgrepo-com.svg") no-repeat center center;
+  background-size: contain;
+  margin: 0;
+}
+.possible_rivals_container .buttons_container {
+  margin-bottom: 10px;
+}
 
-.round_participant_container input{
+.round_participant_container input {
+  margin: 0;
   margin-right: 5px;
-
-} 
+}
 
 .turnament_dashboard
   .participants_table
@@ -788,6 +895,9 @@ label {
   z-index: 3;
 }
 
+.warning_button {
+  background: rgb(237, 175, 175) !important;
+}
 .finish_round_confirmation .buttons_container .yes_button {
   background: rgb(237, 175, 175) !important;
 }
@@ -795,4 +905,19 @@ label {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
+}
+
+.turnament_dashboard
+  .participants_table
+  .games_left_container
+  .participants_to_play_list_container
+  ul
+  li:last-child
+  span:last-child {
+  display: none;
+}
+
+.round_participant_container {
+  display: flex;
+  align-items: center;
 }

@@ -29,9 +29,10 @@ export default function PlayerComp(props) {
   }
 
   function editPlayer() {
-    const cancelEditPlayerButtons = document.getElementsByClassName("cancel_edit_player")
+    const cancelEditPlayerButtons =
+      document.getElementsByClassName("cancel_edit_player");
     for (const b of cancelEditPlayerButtons) {
-      b.click()
+      b.click();
     }
     setPlayerNewData({ name: player.data.name, ranking: player.data.ranking });
     setIsUpdtaePlayer(true);
@@ -104,14 +105,15 @@ export default function PlayerComp(props) {
               ></input>
             </div>
           </form>
+          {isUpdatePlayerErrorMessage && (
+            <div className="error_message_container">
+              <span>{updatePlayerErrorMessage}</span>
+              {/* <button onClick={() => setIsUpdatePlayerErrorMessage(false)}>Ok</button> */}
+            </div>
+          )}
         </div>
       )}
-      {isUpdatePlayerErrorMessage && (
-        <div className="error_message_container">
-          <span>{updatePlayerErrorMessage}</span>
-          {/* <button onClick={() => setIsUpdatePlayerErrorMessage(false)}>Ok</button> */}
-        </div>
-      )}
+
       {/* {isUpdatePlayerConfirmation && 
             <div className="confirmation_container">
                 <span>שחקן עודכן</span>
