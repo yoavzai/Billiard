@@ -41,7 +41,7 @@ export default function StandingsComp() {
             <th>משחקים</th>
             <th>נצחונות</th>
             <th>הפסדים</th>
-            <th>הפרש</th>
+            <th>יחס</th>
             <th>תוצאות</th>
           </tr>
         </thead>

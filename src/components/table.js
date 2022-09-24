@@ -16,6 +16,7 @@ import {
 } from "./utils";
 
 export default function TableComp(props) {
+
   const dispatch = useDispatch();
   const table = props.table;
   const currentTournament = useSelector((state) => state.currentTournament);
@@ -29,6 +30,7 @@ export default function TableComp(props) {
   const [isDeleteTableConfirmation, setIsDeleteTableConfirmation] =
     useState(false);
 
+    
   async function participant1Selected(newParticipantId) {
     setIsInputErrorMessage(false);
     playerSelectedToTable(
@@ -139,6 +141,13 @@ export default function TableComp(props) {
     updateParticipantScore(newScore, table, tables, playerNumber, dispatch);
   }
 
+  function tableNumberKeyPress(e) {
+    if (e.code === "Enter") {
+      updateTableNumber(table, tables, e.target.value, dispatch)
+    }
+
+  }
+
   return (
     <div
       className={`table_container ${
@@ -156,10 +165,8 @@ export default function TableComp(props) {
             <input
               className="ta_num"
               type="text"
-              onChange={(e) =>
-                updateTableNumber(table, tables, e.target.value, dispatch)
-              }
-              value={table.data.number}
+              onKeyDown={tableNumberKeyPress}
+              defaultValue={table.data.number}
             ></input>
           </div>
           <div className="text_input_container">
@@ -205,10 +212,8 @@ export default function TableComp(props) {
             <input
               className="ta_num"
               type="text"
-              onChange={(e) =>
-                updateTableNumber(table, tables, e.target.value, dispatch)
-              }
-              value={table.data.number}
+              onKeyDown={tableNumberKeyPress}
+              defaultValue={table.data.number}
             ></input>
           </div>
         </div>
@@ -246,10 +251,8 @@ export default function TableComp(props) {
             <input
               className="ta_num"
               type="text"
-              onChange={(e) =>
-                updateTableNumber(table, tables, e.target.value, dispatch)
-              }
-              value={table.data.number}
+              onKeyDown={tableNumberKeyPress}
+              defaultValue={table.data.number}
             ></input>
           </div>
           <div>

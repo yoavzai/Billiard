@@ -711,7 +711,7 @@ export function isParticipantFree(arrivedParticipants, participantId) {
 export async function updatePlayerChecked(isChecked, tourId, participantId, currentRound, dispatch) {
     let newArrivedParticipants = currentRound.data.arrivedParticipants
     if (isChecked) {
-        newArrivedParticipants = [...newArrivedParticipants, {participantId: participantId, isFree: true}] 
+        newArrivedParticipants = [...newArrivedParticipants, {participantId: participantId, isFree: true}]
     }
     else {
         newArrivedParticipants = newArrivedParticipants.filter(p => p.participantId !== participantId)
@@ -1123,6 +1123,16 @@ export function isParticipantAvailable(currentRound, participantId) {
         isFree = false
     }
     return isArrived && isFree
+}
+
+export function isParticipantArrived(currentRound, participantId) {
+    const arrivedParticipant = currentRound?.data?.arrivedParticipants?.find(e => e.participantId === participantId)
+    if (arrivedParticipant !== undefined) {
+        return true
+    }
+    else {
+        return false
+    }
 }
 
 

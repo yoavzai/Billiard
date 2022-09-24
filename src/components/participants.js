@@ -11,6 +11,7 @@ import {
 } from "./utils";
 
 export default function ParticipantsComp() {
+
   const dispatch = useDispatch();
   const rankings = useSelector((state) => state.rankings);
   const participants = useSelector((state) => state.participants);
@@ -28,6 +29,7 @@ export default function ParticipantsComp() {
   const [playerOptions, setPlayerOptions] = useState([]);
   const [isAddingToServer, setIsAddingToServer] = useState(false);
   const [isPresentPlayerOptions, setIsPresentPlayerOptions] = useState(false);
+
 
   async function addNewPlayer() {
     setIsAddPlayer(false);
@@ -307,14 +309,6 @@ export default function ParticipantsComp() {
         </div>
       )}
       <div className="participants_table">
-        {/* <table className="table"> */}
-        {/* <thead>
-            <tr>
-              <th>שם</th>
-              <th>משחקים שנשארו</th>
-            </tr>
-          </thead> */}
-        {/* <tbody> */}
         {sortedParticipantsByGamesLeft().map((participant) => {
           return (
             <div className="participant_box container" key={participant.id}>
@@ -327,8 +321,6 @@ export default function ParticipantsComp() {
             </div>
           );
         })}
-        {/* </tbody> */}
-        {/* </table> */}
       </div>
     </div>
   );

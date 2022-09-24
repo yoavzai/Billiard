@@ -6,9 +6,17 @@ export default function TablesComp() {
   const dispatch = useDispatch();
   const tables = useSelector((state) => state.tables);
 
+  function numOfTakenTables() {
+    return tables.filter(t => t.data.isTaken).length
+  }
+
   return (
     <div className="tables_container container">
       <h2>שולחנות</h2>
+      <div className="active_games_container">
+        <span>משחקים פעילים: </span>  
+        <span>{numOfTakenTables()}</span>
+      </div>
       <div className="buttons_container">
         <button className="button" onClick={() => addTable(tables, dispatch)}>
           הוסף שולחן
@@ -16,7 +24,7 @@ export default function TablesComp() {
       </div>
       <div className="tabels_grid">
         {tables
-          .sort((a, b) => b.data.date - a.data.date)
+          .sort((a, b) => a.data.number - b.data.number)
           .map((table) => {
             return <TableComp key={table.id} table={table}></TableComp>;
           })}

@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import {
   endRound,
-  gamesLeftAboveAvarge,
-  getOptionalParticipantsIdsToPlay,
   getPlayerByParticipantIdFromStore,
-  isParticipantAvailable,
+  isParticipantArrived,
 } from "./utils";
 import RoundResultsComp from "./roundResults";
 import { useEffect } from "react";
 import { RoundParticipantPossibleRivalsComp } from "./roundParticipantPossibleRivals";
+import RoundParticipantGamesLeftComp from "./roundParticipantGamesLeft";
+
 
 export default function RoundComp() {
   const dispatch = useDispatch();
@@ -21,11 +21,19 @@ export default function RoundComp() {
   const participants = useSelector((state) => state.participants);
   const currentTournament = useSelector((state) => state.currentTournament);
   const currentRound = useSelector((state) => state.currentRound);
+  const [scrollTopPos, setScrollTopPos] = useState(0)
   const [isFinishRoundErrorMessage, setIsFinishRoundErrorMessage] =
     useState(false);
   const [isFinishRoundConfirmation, setIsFinishRoundConfirmation] =
     useState(false);
-  // const [newGameData, setNewGameData] = useState({tableNum: "", participant1Id: "", participant2Id: ""})
+
+  
+  useEffect(() => {
+    const roundDiv = document.getElementById("round_container")
+    if (roundDiv != null) {
+      roundDiv.scrollTo(0, Number(scrollTopPos))
+    }
+  }, [tables, currentRound])
 
   function finishRoundBtnClick() {
     for (const table of tables) {
@@ -154,10 +162,44 @@ export default function RoundComp() {
     document.body.classList.remove("round_open");
   }
 
+  function checkAllPosibleRivals() {
+    const openButtons = Array.from(document.getElementsByClassName("possible_rivals_button_open"))
+    const allButtons = Array.from(document.getElementsByClassName("possible_rivals_button"))
+    if (openButtons.length === allButtons.length) {
+      for (const b of allButtons) {
+        b.click()
+      }
+    }
+    else {
+      const buttonsToClick = allButtons.filter(b => !openButtons.includes(b))
+      for (const button of buttonsToClick) {
+        button.click()
+      }
+
+    }
+  }
+
+  function checkAllGamesLeft() {
+    const openButtons = Array.from(document.getElementsByClassName("games_left_button_open"))
+    const allButtons = Array.from(document.getElementsByClassName("games_left_button"))
+    if (openButtons.length === allButtons.length) {
+      for (const b of allButtons) {
+        b.click()
+      }
+    }
+    else {
+      const buttonsToClick = allButtons.filter(b => !openButtons.includes(b))
+      for (const button of buttonsToClick) {
+        button.click()
+      }
+
+    }
+  }
+
   return (
     <div>
       {Object.keys(currentRound).length > 0 && (
-        <div className="container round_container">
+        <div id="round_container" className="container round_container" onScroll={(e) => setScrollTopPos(e.target.scrollTop)}>
           <div className="buttons_container close_button_container">
             <button
               className="button close_button"
@@ -227,20 +269,14 @@ export default function RoundComp() {
               <table className="table arrived_participants_table">
                 <thead>
                   <tr>
-                    <th className="pa_name">שם</th>
-                    {currentRound.data.isActive && (
-                      <th className="t_num">שולחן</th>
-                    )}
-                    {currentRound.data.isActive && (
-                      <th className="opp_info">יריבים אפשריים</th>
-                    )}
-                    {currentRound.data.isActive && (
-                      <th className="left_games">משחקים שנותרו</th>
-                    )}
+                    <th className="pa_name">שם</th>                  
+                    <th className="t_num">שולחן</th>
+                    <th className="opp_info" >יריבים אפשריים<button className="button info_all_rivals_button" onClick={checkAllPosibleRivals}>הצג הכל</button></th>
+                    <th className="left_games">משחקים שנותרו<button className="button info_all_games_left_button" onClick={checkAllGamesLeft}>הצג הכל</button></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedRoundParticipants().map((participant) => {
+                  {sortedRoundParticipants().map((participant, index) => {
                     return (
                       <tr key={participant.id}>
                         <td className="pa_name">
@@ -254,6 +290,7 @@ export default function RoundComp() {
                               ).data.name
                             }
                             currentRound={currentRound}
+                            index={index}
                           ></RoundParticipant>
                         </td>
                         {currentRound.data.isActive && (
@@ -266,39 +303,21 @@ export default function RoundComp() {
                           </td>
                         )}
                         {currentRound.data.isActive &&
-                          isParticipantAvailable(
-                            currentRound,
-                            participant.id
-                          ) && (
-                            <td className="opp_info">
-                              <RoundParticipantPossibleRivalsComp
-                                participant={participant}
-                              ></RoundParticipantPossibleRivalsComp>
-                            </td>
-                          )}
+                          <td className="opp_info">
+                            {isParticipantArrived(currentRound,  participant.id) &&
+                            <RoundParticipantPossibleRivalsComp
+                              participant={participant}
+                            ></RoundParticipantPossibleRivalsComp>
+                            }
+                          </td>
+                        }
                         {currentRound.data.isActive &&
-                          isParticipantAvailable(
-                            currentRound,
-                            participant.id
-                          ) && (
                             <td className="left_games">
-                              <span
-                                className={`${
-                                  gamesLeftAboveAvarge(
-                                    participants,
-                                    participant
-                                  )
-                                    ? "red"
-                                    : ""
-                                }`}
-                              >
-                                {
-                                  participant?.data?.participantsToPlayIds
-                                    .length
-                                }
-                              </span>
+                              <RoundParticipantGamesLeftComp
+                                participant={participant}>
+                              </RoundParticipantGamesLeftComp>
                             </td>
-                          )}
+                          }
                       </tr>
                     );
                   })}
@@ -306,27 +325,6 @@ export default function RoundComp() {
               </table>
             </div>
           </div>
-          {/* <div>
-                    <label htmlFor="new_game_participant1">שחקן 1</label>
-                    <input 
-                            id="new_game_participant1" 
-                           readOnly type="text" 
-                           value={newGamePlayerName(newGameData.participant1Id)}>
-                    </input>
-                    <label htmlFor="new_game_participant2">שחקן 2</label>
-                    <input 
-                            id="new_game_participant2" 
-                           readOnly type="text" 
-                           value={newGamePlayerName(newGameData.participant2Id)}>
-                    </input>
-                    <label htmlFor="new_game_table_num">שולחן</label>
-                    <input 
-                            id="new_game_table_num" 
-                           readOnly type="text" 
-                           value={newGameData.tableNum}>
-                    </input>
-
-                </div> */}
           {currentRound?.data?.isActive ? (
             <TablesComp></TablesComp>
           ) : (

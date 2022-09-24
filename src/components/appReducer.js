@@ -33,9 +33,6 @@ const appReducer = (state = {
                         participants: data.newParticipants, 
                         currentRound: data.newCurrentRound}
 
-    // case "updateResults" :
-    //   return {...state, currentRound: data}
-
     case "cancelGame" :
       return {...state, tables: data.newTables, currentRound: data.newCurrentRound}
 
