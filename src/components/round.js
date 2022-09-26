@@ -86,7 +86,7 @@ export default function RoundComp() {
         }
       }
     });
-    return sortedParticipants;
+    return sortedParticipants.filter(p => p.data.active);
   }
 
   // function clearRoundParticipantTableNumber(participantId) {

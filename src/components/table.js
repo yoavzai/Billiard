@@ -27,6 +27,7 @@ export default function TableComp(props) {
   const rankings = useSelector((state) => state.rankings);
   const [isInputErrorMessage, setIsInputErrorMessage] = useState(false);
   const [inputErrorMessage, setInputErrorMessage] = useState("");
+  const [newTableNum, setNewTableNum] = useState(table.data.number);
   const [isDeleteTableConfirmation, setIsDeleteTableConfirmation] =
     useState(false);
 
@@ -143,9 +144,8 @@ export default function TableComp(props) {
 
   function tableNumberKeyPress(e) {
     if (e.code === "Enter") {
-      updateTableNumber(table, tables, e.target.value, dispatch)
+      updateTableNumber(table, tables, newTableNum, dispatch)
     }
-
   }
 
   return (
@@ -166,7 +166,8 @@ export default function TableComp(props) {
               className="ta_num"
               type="text"
               onKeyDown={tableNumberKeyPress}
-              defaultValue={table.data.number}
+              onChange={(e) => setNewTableNum(e.target.value)}
+              value={newTableNum}
             ></input>
           </div>
           <div className="text_input_container">
@@ -213,7 +214,8 @@ export default function TableComp(props) {
               className="ta_num"
               type="text"
               onKeyDown={tableNumberKeyPress}
-              defaultValue={table.data.number}
+              onChange={(e) => setNewTableNum(e.target.value)}
+              value={newTableNum}
             ></input>
           </div>
         </div>
@@ -252,7 +254,8 @@ export default function TableComp(props) {
               className="ta_num"
               type="text"
               onKeyDown={tableNumberKeyPress}
-              defaultValue={table.data.number}
+              onChange={(e) => setNewTableNum(e.target.value)}
+              value={newTableNum}
             ></input>
           </div>
           <div>

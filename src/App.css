@@ -584,6 +584,10 @@ body.round_open::before {
   border-collapse: collapse;
 }
 
+.par_not_active {
+  background-color: gray;
+}
+
 .arrived_participants_table tr {
   border-bottom: 1px solid #000;
 }

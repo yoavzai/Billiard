@@ -154,6 +154,8 @@ export async function updatePlayerOnServer(playerId, playerNewData) {
 }
 
 export async function updateParticipantOnServer(tournamentId, participantId, participantNewData) {
+    console.log(participantId)
+    console.log(participantNewData)
     return await db.collection("tournaments").doc(tournamentId).collection("participants").doc(participantId).update(participantNewData)
 } 
 
@@ -468,6 +470,8 @@ function getPlayerByParticipantId(participantId, participants, players) {
     for (const round of rounds) {
         for (const result of round.data.results) {
             // allResults.push(result)
+            const participant1 = getParticipantByIdFromStore(result.participant1.id, participants)
+            const participant2 = getParticipantByIdFromStore(result.participant2.id, participants)
             const player1 = getPlayerByParticipantId(result.participant1.id, participants, players)
             const player1name = player1.data.name
             const player1score = Number(result.participant1.score)
@@ -485,16 +489,42 @@ function getPlayerByParticipantId(participantId, participants, players) {
             }
             playersResults[player1name].results.push(result)
             playersResults[player2name].results.push(result)
-            playersResults[player1name].games += 1
-            player1won ? playersResults[player1name].wins += 1 : playersResults[player1name].losses += 1
-            playersResults[player1name].plusMinus = playersResults[player1name].plusMinus + player1score - player2score
-            playersResults[player2name].games += 1
-            player2won ? playersResults[player2name].wins += 1 : playersResults[player2name].losses += 1
-            playersResults[player2name].plusMinus = playersResults[player2name].plusMinus + player2score - player1score
+
+            if ((participant1.data.active && participant2.data.active) || (!participant1.data.active && !participant2.data.active)) {
+                playersResults[player1name].games += 1
+                player1won ? playersResults[player1name].wins += 1 : playersResults[player1name].losses += 1
+                playersResults[player1name].plusMinus = playersResults[player1name].plusMinus + player1score - player2score
+                playersResults[player2name].games += 1
+                player2won ? playersResults[player2name].wins += 1 : playersResults[player2name].losses += 1
+                playersResults[player2name].plusMinus = playersResults[player2name].plusMinus + player2score - player1score
+            }
+            else if (!participant1.data.active && participant2.data.active) {
+                playersResults[player1name].games += 1
+                player1won ? playersResults[player1name].wins += 1 : playersResults[player1name].losses += 1
+                playersResults[player1name].plusMinus = playersResults[player1name].plusMinus + player1score - player2score
+                playersResults[player2name].games += 1
+            }
+            else if (participant1.data.active && !participant2.data.active) {
+                playersResults[player2name].games += 1
+                player2won ? playersResults[player2name].wins += 1 : playersResults[player2name].losses += 1
+                playersResults[player2name].plusMinus = playersResults[player2name].plusMinus + player2score - player1score
+                playersResults[player1name].games += 1
+            }
         }
     }
 
     const sortedPlayers = Object.values(playersResults).sort((a,b) => {
+        const participant1 = getParticipantByIdFromStore(a.participantId, participants)
+        const participant2 = getParticipantByIdFromStore(b.participantId, participants)
+
+        if (participant1.data.active && !participant2.data.active) {
+            return -1
+        }
+
+        if (!participant1.data.active && participant2.data.active) {
+            return 1
+        }
+
         if (a.wins > b.wins) {
             return -1
         }
@@ -659,6 +689,66 @@ export async function deleteParticipant(tourId, participantId, currentRound, par
     await removeParticipantFromArrivedParticipantsOnAllRounds(tourId, participantId)
     await removeParticipantIdFromAllParticipantsPlayingListOnServer(tourId, participantId, participants)
     await removeParticipantFromServer(tourId, participantId)
+    if (tableId !== undefined) {
+        await updateTableOnServer(tableId, tableNewData)
+    }
+    
+    // newParticipants = await getTournamentParticipantsFromServer(tourId)
+    // if (Object.keys(newCurrentRound).length !== 0){
+    //     newCurrentRound = await getRoundByIdFromServer(tourId, newCurrentRound.id)
+    // }
+    // newTables = await getTablesFromServer()
+    // dispatch({type: "participantRemoved", payload: {newParticipants: newParticipants, newCurrentRound: newCurrentRound, newTables: newTables}})
+    
+}
+
+export async function freezeParticipant(tourId, participantId, currentRound, participants, tables, dispatch) {
+    let newCurrentRound = {}
+    let participantNewData = {}
+
+    if (Object.keys(currentRound).length !== 0){
+        const newArrivedParticipants = currentRound.data.arrivedParticipants.filter(p => p.participantId !== participantId)
+        newCurrentRound = {id: currentRound.id, data: {...currentRound.data, arrivedParticipants: newArrivedParticipants}}
+    }
+    let newParticipants = participants.map(p => {
+        if (p.id === participantId) {
+            participantNewData = {...p.data, active: false, participantsToPlayIds: []}
+            return (
+                {...p, data: participantNewData}
+            ) 
+        }
+        else  {
+            return (
+                {...p, data: {...p.data, participantsToPlayIds: p.data.participantsToPlayIds.filter(id => id !== participantId)}}
+            )
+        }
+    })
+
+    let tableId = undefined
+    let tableNewData = {}
+    let newTables = tables.map(t => {
+        if (t.data.participant1Id === participantId) {
+            tableId = t.id
+            tableNewData = {...t.data, participant1Id: ""}
+            return {id: t.id, data: tableNewData}
+        }
+        if (t.data.participant2Id === participantId) {
+            tableId = t.id
+            tableNewData = {...t.data, participant2Id: ""}
+            return {id: t.id, data: tableNewData}
+        }
+        return t
+    })
+
+
+
+    dispatch({type: "participantRemoved", payload: {newParticipants: newParticipants, newCurrentRound: newCurrentRound, newTables: newTables}})
+    
+    await updateParticipantOnServer(tourId, participantId, participantNewData)
+    const [standings, allResults] = await getStandings(tourId)
+    dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
+    await removeParticipantFromArrivedParticipantsOnAllRounds(tourId, participantId)
+    await removeParticipantIdFromAllParticipantsPlayingListOnServer(tourId, participantId, newParticipants)
     if (tableId !== undefined) {
         await updateTableOnServer(tableId, tableNewData)
     }

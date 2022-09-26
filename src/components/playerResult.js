@@ -182,7 +182,7 @@ export default function PlayerResultComp(props) {
           ) : (
             <div
               className={`result_container ${
-                result.won ? "player_won" : "player_lost"
+                !result.active ? "result_not_active" : result.won ? "player_won" : "player_lost"
               }`}
             >
               <div className="player_result_row">
@@ -213,6 +213,7 @@ export default function PlayerResultComp(props) {
                   </div>
                 </div>
               ) : (
+                result.active &&
                 <div className="buttons_container">
                   <button
                     className="button edit_button"

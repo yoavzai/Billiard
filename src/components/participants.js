@@ -7,6 +7,7 @@ import {
   addPlayer,
   getParticipantByNameFromStore,
   getPlayerByNameFromStore,
+  getPlayerByParticipantIdFromStore,
   playersNotRegistered,
 } from "./utils";
 
@@ -29,7 +30,7 @@ export default function ParticipantsComp() {
   const [playerOptions, setPlayerOptions] = useState([]);
   const [isAddingToServer, setIsAddingToServer] = useState(false);
   const [isPresentPlayerOptions, setIsPresentPlayerOptions] = useState(false);
-
+  const [sortBy, setSortBy] = useState("name")
 
   async function addNewPlayer() {
     setIsAddPlayer(false);
@@ -58,7 +59,8 @@ export default function ParticipantsComp() {
     const newParticipantData = {
       playerId: player.id,
       date: time.getTime(),
-      participantsToPlayIds: participants.map((participant) => participant.id),
+      participantsToPlayIds: participants.filter(p => p.data.active).map((participant) => participant.id),
+      active: true
     };
     await addParticipant(
       newParticipantData,
@@ -129,6 +131,14 @@ export default function ParticipantsComp() {
       return b.data.date - a.data.date;
     });
     return sorted;
+  }
+
+  function sortedParticipantsByName() {
+    return participants.sort((a,b) => {
+      const name1 = getPlayerByParticipantIdFromStore(a.id, participants, players)?.data?.name
+      const name2 = getPlayerByParticipantIdFromStore(b.id, participants, players)?.data?.name
+      return name1.localeCompare(name2)
+    })
   }
 
   function searchPlayerKeyPress(e) {
@@ -308,19 +318,38 @@ export default function ParticipantsComp() {
           )}
         </div>
       )}
+      <div className="buttons_container">
+            <button onClick={() => setSortBy("name")}>לפי שם</button>
+            <button onClick={() => setSortBy("games left")}>לפי משחקים שנשארו</button>
+      </div>
       <div className="participants_table">
-        {sortedParticipantsByGamesLeft().map((participant) => {
-          return (
-            <div className="participant_box container" key={participant.id}>
-              <div>
-                <ParticipantComp participant={participant}></ParticipantComp>
+        {sortBy === "name" ? 
+          sortedParticipantsByName().map((participant) => {
+            return (
+              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"}`} key={participant.id}>
+                <div>
+                  <ParticipantComp participant={participant}></ParticipantComp>
+                </div>
+                <div>
+                  <GamesLeftComp participant={participant}></GamesLeftComp>
+                </div>
               </div>
-              <div>
-                <GamesLeftComp participant={participant}></GamesLeftComp>
+            );
+          })
+          :
+          sortedParticipantsByGamesLeft().map((participant) => {
+            return (
+              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"}`} key={participant.id}>
+                <div>
+                  <ParticipantComp participant={participant}></ParticipantComp>
+                </div>
+                <div>
+                  <GamesLeftComp participant={participant}></GamesLeftComp>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        }
       </div>
     </div>
   );

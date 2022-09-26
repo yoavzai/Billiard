@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import PlayerResultsComp from "./playerResults";
+import { getParticipantByIdFromStore } from "./utils";
 
 export default function StandingsComp() {
   const standings = useSelector((state) => state.standings);
+  const participants = useSelector((state) => state.participants);
   const [isPresentPlayerResults, setIsPresentPlayerResults] = useState(false);
   const [playerToPresentResults, setPlayerToPresentResults] = useState({});
 
@@ -47,8 +49,9 @@ export default function StandingsComp() {
         </thead>
         <tbody>
           {standings.map((player, index) => {
+            const participant = getParticipantByIdFromStore(player.participantId, participants)
             return (
-              <tr key={index}>
+              <tr key={index} className={`${participant.data.active ? "" : "par_not_active"}`}>
                 <td>{index + 1}</td>
                 <td>{player.name}</td>
                 <td>{player.games}</td>

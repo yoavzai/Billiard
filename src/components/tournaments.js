@@ -56,14 +56,14 @@ export default function TournamentsComp() {
       //     return
       // }
 
-      if (tour.data.isActive) {
-        setIsNewTournamentConfirmation(false);
-        setIsStartTournamentErrorMessage(true);
-        setTournamentErrorMessage(
-          "אי אפשר להתחיל טורניר חדש בזמן שקיים טורניר פעיל"
-        );
-        return;
-      }
+      // if (tour.data.isActive) {
+      //   setIsNewTournamentConfirmation(false);
+      //   setIsStartTournamentErrorMessage(true);
+      //   setTournamentErrorMessage(
+      //     "אי אפשר להתחיל טורניר חדש בזמן שקיים טורניר פעיל"
+      //   );
+      //   return;
+      // }
     }
     const newDate = new Date();
     const newMonth = newDate.getMonth();

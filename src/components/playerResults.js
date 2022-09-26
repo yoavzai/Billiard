@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import PlayerResultComp from "./playerResult";
-import { getPlayerByParticipantIdFromStore } from "./utils";
+import { getParticipantByIdFromStore, getPlayerByParticipantIdFromStore } from "./utils";
 
 export default function PlayerResultsComp(props) {
   const player = props.player;
@@ -16,6 +16,9 @@ export default function PlayerResultsComp(props) {
       playerResults[round.data.number] = [];
     }
     for (const result of player.results) {
+      const participant1 = getParticipantByIdFromStore(result.participant1.id, participants)
+      const participant2 = getParticipantByIdFromStore(result.participant2.id, participants)
+      const active = participant1.data.active && participant2.data.active ? true : false
       if (result.participant1.id === player.participantId) {
         const won = result.participant1.won;
         const player1Name = player.name;
@@ -34,6 +37,7 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 1,
           originalResult: result,
+          active: active
         });
       } else if (result.participant2.id === player.participantId) {
         const won = result.participant2.won;
@@ -53,6 +57,7 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 2,
           originalResult: result,
+          active: active
         });
       }
     }
@@ -62,6 +67,9 @@ export default function PlayerResultsComp(props) {
   function playerResultsByName() {
     let playerResults = [];
     for (const result of player.results) {
+      const participant1 = getParticipantByIdFromStore(result.participant1.id, participants)
+      const participant2 = getParticipantByIdFromStore(result.participant2.id, participants)
+      const active = participant1.data.active && participant2.data.active ? true : false
       if (result.participant1.id === player.participantId) {
         const won = result.participant1.won;
         const player1Name = player.name;
@@ -80,7 +88,8 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 1,
           originalResult: result,
-          roundNumber: result.roundNumber
+          roundNumber: result.roundNumber,
+          active: active
         });
       } else if (result.participant2.id === player.participantId) {
         const won = result.participant2.won;
@@ -100,7 +109,8 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 2,
           originalResult: result,
-          roundNumber: result.roundNumber
+          roundNumber: result.roundNumber,
+          active: active
         });
       }
     }

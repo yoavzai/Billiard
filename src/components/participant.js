@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteParticipant,
+  freezeParticipant,
   getPlayerByParticipantIdFromStore,
   getRoundByIdFromServer,
   getStandings,
@@ -71,7 +72,7 @@ export default function ParticipantComp(props) {
 
   function removeParticipantConfirmed() {
     setIsRemoveParticipantConfirmation(false);
-    deleteParticipant(
+    freezeParticipant(
       currentTournament.id,
       participant.id,
       currentRound,
@@ -98,12 +99,12 @@ export default function ParticipantComp(props) {
   }
 
   return (
-    <div className="active_participant_container">
+    <div className={`active_participant_container`}>
       <span>{player?.data?.name}</span>
       {currentTournament.data.isActive && isRemoveParticipantConfirmation ? (
         <div className="confirmation_container container">
           <span>
-            מחיקת משתתף מהטורניר תמחק את כל התוצאות שלו. האם אתה בטוח?
+            מחיקת משתתף מהטורניר לא תחשב את התוצאות שלו. האם אתה בטוח?
           </span>
           <div className="buttons_container">
             <button
@@ -198,12 +199,14 @@ export default function ParticipantComp(props) {
             <button className="button edit_button" onClick={editPlayer}>
               ערוך
             </button>
+            {participant.data.active &&
             <button
               className="button delete_button"
               onClick={removeParticipantBtnClick}
             >
               מחק
             </button>
+            }
           </div>
         </div>
       )}
