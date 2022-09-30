@@ -16,7 +16,7 @@ export default function RoundResultsComp() {
 
     return (
         <div className="round_results_container">
-            <h3>{`משחקים שהסתיימו (${currentRound?.data?.results.length})`}</h3>
+            <h3>{`תוצאות הסיבוב (${currentRound?.data?.results.length})`}</h3>
             <div className="text_input_container">
                 <label htmlFor="search-player">חפש</label>
                 <input type="text" onChange={(e) => setWantedPlayerName(e.target.value)}></input>

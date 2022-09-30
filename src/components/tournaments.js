@@ -40,7 +40,7 @@ export default function TournamentsComp() {
 
   async function startNewTournament() {
     const tourId = await addTournament(
-      { startDate: startDate, isActive: true },
+      { startDate: startDate, isActive: true, playoff8: [], playoff16: [], winners: {"first": {}, "second": {}, "third": {}} },
       dispatch
     );
     navigate("/tournament/" + tourId);

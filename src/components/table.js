@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +14,7 @@ import {
   cancelGame,
   startGame,
   setTableFreezeStatus,
+  updateTablesNumbers,
 } from "./utils";
 
 export default function TableComp(props) {
@@ -31,6 +33,10 @@ export default function TableComp(props) {
   const [isDeleteTableConfirmation, setIsDeleteTableConfirmation] =
     useState(false);
 
+
+  useEffect(() => {
+    setNewTableNum(table.data.number)
+  }, [table])
     
   async function participant1Selected(newParticipantId) {
     setIsInputErrorMessage(false);
@@ -142,9 +148,22 @@ export default function TableComp(props) {
     updateParticipantScore(newScore, table, tables, playerNumber, dispatch);
   }
 
+  async function changeTableNumber() {
+    if (newTableNum === table.data.number) {
+      return
+    }
+    const prevTable = tables.find(t => t.data.number === newTableNum)
+    if (prevTable != undefined) {
+      updateTablesNumbers(prevTable, table.data.number, table, newTableNum, tables, dispatch)
+    }
+    else {
+      updateTableNumber(table, tables, newTableNum, dispatch)
+    }
+  }
+
   function tableNumberKeyPress(e) {
     if (e.code === "Enter") {
-      updateTableNumber(table, tables, newTableNum, dispatch)
+      e.target.blur()
     }
   }
 
@@ -167,6 +186,7 @@ export default function TableComp(props) {
               type="text"
               onKeyDown={tableNumberKeyPress}
               onChange={(e) => setNewTableNum(e.target.value)}
+              onBlur={changeTableNumber}
               value={newTableNum}
             ></input>
           </div>
@@ -215,6 +235,7 @@ export default function TableComp(props) {
               type="text"
               onKeyDown={tableNumberKeyPress}
               onChange={(e) => setNewTableNum(e.target.value)}
+              onBlur={changeTableNumber}
               value={newTableNum}
             ></input>
           </div>
@@ -255,6 +276,7 @@ export default function TableComp(props) {
               type="text"
               onKeyDown={tableNumberKeyPress}
               onChange={(e) => setNewTableNum(e.target.value)}
+              onBlur={changeTableNumber}
               value={newTableNum}
             ></input>
           </div>

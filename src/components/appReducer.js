@@ -51,6 +51,11 @@ const appReducer = (state = {
                         currentRound: data.newCurrentRound,
                         tables: data.newTables}
 
+    case "participantReturned" :
+      return {...state, participants: data.newParticipants, 
+                        currentRound: data.newCurrentRound,
+                        tables: data.newTables}
+
     case "tournamentSelected" :
       return {...state, currentTournament: data.currentTournament,
                         participants: data.participants, 
@@ -66,6 +71,7 @@ const appReducer = (state = {
       return {...state, currentRound: data}
     
     case "currentTournament" :
+      console.log(data)
       return {...state, currentTournament: data}
     
     case "tournaments" :

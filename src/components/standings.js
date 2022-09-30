@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PlayerResultsComp from "./playerResults";
 import { getParticipantByIdFromStore } from "./utils";
 
 export default function StandingsComp() {
+
+  const dispatch = useDispatch()
   const standings = useSelector((state) => state.standings);
   const participants = useSelector((state) => state.participants);
   const [isPresentPlayerResults, setIsPresentPlayerResults] = useState(false);
@@ -32,6 +34,18 @@ export default function StandingsComp() {
     setPlayerToPresentResults({});
   }
 
+  function getMissingsAmount(participant) {
+    let gamesLeft = participant.data.participantsToPlayIds.length
+    if (participant.data.active) {
+      gamesLeft =  participant.data.participantsToPlayIds.filter(id => {
+        const p = getParticipantByIdFromStore(id, participants)
+        return p.data.active
+      }).length
+    }
+
+    return Math.floor(gamesLeft/4)
+  }
+
   return (
     <div className="container standings_container">
       <h3>מקומות</h3>
@@ -44,6 +58,7 @@ export default function StandingsComp() {
             <th>נצחונות</th>
             <th>הפסדים</th>
             <th>יחס</th>
+            <th>חיסורים</th>
             <th>תוצאות</th>
           </tr>
         </thead>
@@ -51,19 +66,20 @@ export default function StandingsComp() {
           {standings.map((player, index) => {
             const participant = getParticipantByIdFromStore(player.participantId, participants)
             return (
-              <tr key={index} className={`${participant.data.active ? "" : "par_not_active"}`}>
+              <tr key={index} className={`${participant.data.active ? "" : "par_not_active"} ${participant.data.arrivedToPlayoff ? "" : "par_not_arrived_to_playoff"}`}>
                 <td>{index + 1}</td>
                 <td>{player.name}</td>
                 <td>{player.games}</td>
                 <td>{player.wins}</td>
                 <td>{player.losses}</td>
                 <td><span className="difference">{player.plusMinus}</span></td>
+                <td>{getMissingsAmount(participant)}</td>
                 <td>
                   <button
                     id={player.participantId + "presentResults"}
                     className="button"
                     onClick={() => presentPlayerResultsBtnClick(player)}
-                  >
+                    >
                     הצג
                   </button>
                 </td>

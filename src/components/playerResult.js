@@ -181,9 +181,7 @@ export default function PlayerResultComp(props) {
             </div>
           ) : (
             <div
-              className={`result_container ${
-                !result.active ? "result_not_active" : result.won ? "player_won" : "player_lost"
-              }`}
+              className={`result_container ${result.won ? "player_won" : "player_lost"}`}
             >
               <div className="player_result_row">
                 <span>{result.player1Name}</span>

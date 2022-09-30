@@ -154,8 +154,6 @@ export async function updatePlayerOnServer(playerId, playerNewData) {
 }
 
 export async function updateParticipantOnServer(tournamentId, participantId, participantNewData) {
-    console.log(participantId)
-    console.log(participantNewData)
     return await db.collection("tournaments").doc(tournamentId).collection("participants").doc(participantId).update(participantNewData)
 } 
 
@@ -525,6 +523,14 @@ function getPlayerByParticipantId(participantId, participants, players) {
             return 1
         }
 
+        if (participant1.data.arrivedToPlayoff && !participant2.data.arrivedToPlayoff) {
+            return -1
+        }
+
+        if (!participant1.data.arrivedToPlayoff && participant2.data.arrivedToPlayoff) {
+            return 1
+        }
+
         if (a.wins > b.wins) {
             return -1
         }
@@ -712,16 +718,24 @@ export async function freezeParticipant(tourId, participantId, currentRound, par
     }
     let newParticipants = participants.map(p => {
         if (p.id === participantId) {
-            participantNewData = {...p.data, active: false, participantsToPlayIds: []}
+            let removedParticipantsToPlayIds = []
+            for (const rp of participants.filter(p => !p.data.active)) {
+                if (rp.data.participantsToPlayIds.includes(participantId)) {
+                    removedParticipantsToPlayIds.push(rp.id)
+                }
+            }
+            const newParticipantsToPlayIds = p.data.participantsToPlayIds.concat(removedParticipantsToPlayIds)
+            participantNewData = {...p.data, active: false, participantsToPlayIds: newParticipantsToPlayIds}
             return (
                 {...p, data: participantNewData}
             ) 
         }
-        else  {
+        if (p.data.active)  {
             return (
                 {...p, data: {...p.data, participantsToPlayIds: p.data.participantsToPlayIds.filter(id => id !== participantId)}}
             )
         }
+        return p
     })
 
     let tableId = undefined
@@ -740,15 +754,77 @@ export async function freezeParticipant(tourId, participantId, currentRound, par
         return t
     })
 
-
-
     dispatch({type: "participantRemoved", payload: {newParticipants: newParticipants, newCurrentRound: newCurrentRound, newTables: newTables}})
     
     await updateParticipantOnServer(tourId, participantId, participantNewData)
     const [standings, allResults] = await getStandings(tourId)
     dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
     await removeParticipantFromArrivedParticipantsOnAllRounds(tourId, participantId)
-    await removeParticipantIdFromAllParticipantsPlayingListOnServer(tourId, participantId, newParticipants)
+    for (const p of newParticipants) {
+        await updateParticipantOnServer(tourId, p.id, p.data)
+    }
+    if (tableId !== undefined) {
+        await updateTableOnServer(tableId, tableNewData)
+    }
+    
+    // newParticipants = await getTournamentParticipantsFromServer(tourId)
+    // if (Object.keys(newCurrentRound).length !== 0){
+    //     newCurrentRound = await getRoundByIdFromServer(tourId, newCurrentRound.id)
+    // }
+    // newTables = await getTablesFromServer()
+    // dispatch({type: "participantRemoved", payload: {newParticipants: newParticipants, newCurrentRound: newCurrentRound, newTables: newTables}})
+    
+}
+
+export async function unfreezeParticipant(tourId, participantId, currentRound, participants, tables, dispatch) {
+    let newCurrentRound = {}
+    let participantNewData = {}
+    const returnedParticipantParticipantsToPlayIds = getParticipantByIdFromStore(participantId, participants).data.participantsToPlayIds
+
+    let newParticipants = participants.map(p => {
+        if (p.id === participantId) {
+            const newParticipantsToPlayIds = p.data.participantsToPlayIds.filter(id => {
+                const participant = getParticipantByIdFromStore(id, participants)
+                return participant.data.active
+            })
+            participantNewData = {...p.data, active: true, participantsToPlayIds: newParticipantsToPlayIds}
+            return (
+                {...p, data: participantNewData}
+            ) 
+        }
+        if (p.data.active && returnedParticipantParticipantsToPlayIds.includes(p.id))  {
+            return (
+                {...p, data: {...p.data, participantsToPlayIds: [...p.data.participantsToPlayIds, participantId]}}
+            )
+        }
+        return p
+    })
+
+    let tableId = undefined
+    let tableNewData = {}
+    let newTables = tables.map(t => {
+        if (t.data.participant1Id === participantId) {
+            tableId = t.id
+            tableNewData = {...t.data, participant1Id: ""}
+            return {id: t.id, data: tableNewData}
+        }
+        if (t.data.participant2Id === participantId) {
+            tableId = t.id
+            tableNewData = {...t.data, participant2Id: ""}
+            return {id: t.id, data: tableNewData}
+        }
+        return t
+    })
+
+    dispatch({type: "participantReturned", payload: {newParticipants: newParticipants, newCurrentRound: newCurrentRound, newTables: newTables}})
+    
+    await updateParticipantOnServer(tourId, participantId, participantNewData)
+    const [standings, allResults] = await getStandings(tourId)
+    dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
+    await removeParticipantFromArrivedParticipantsOnAllRounds(tourId, participantId)
+    for (const p of newParticipants) {
+        await updateParticipantOnServer(tourId, p.id, p.data)
+    }
     if (tableId !== undefined) {
         await updateTableOnServer(tableId, tableNewData)
     }
@@ -999,6 +1075,31 @@ export async function updateTableNumber(table, tables, number, dispatch) {
 
     dispatch({type: "tables", payload: newTables})
     await updateTableOnServer(table.id, tableNewData)
+    return newTables
+    
+    // newTables = await getTablesFromServer()
+    // dispatch({type: "tables", payload: newTables})
+}
+
+export async function updateTablesNumbers(table1, num1, table2, num2, tables, dispatch) {
+    const table1NewData = {...table1.data, number: num1}
+    const table2NewData = {...table2.data, number: num2}
+
+    let newTables = tables.map(t => {
+        if (t.id === table1.id) {
+            return {id: t.id, data: table1NewData}
+        }
+        if (t.id === table2.id) {
+            return {id: t.id, data: table2NewData}
+        }
+        return t
+    })
+
+    console.log(newTables)
+
+    dispatch({type: "tables", payload: newTables})
+    await updateTableOnServer(table1.id, table1NewData)
+    await updateTableOnServer(table2.id, table2NewData)
     
     // newTables = await getTablesFromServer()
     // dispatch({type: "tables", payload: newTables})
@@ -1376,3 +1477,542 @@ export function isParticipantArrived(currentRound, participantId) {
 //     }
 
 // }
+
+export async function updatePlayoff8(currentTournament, playoff8, winners, dispatch) {
+    dispatch({type: "currentTournament", payload: {...currentTournament, data: {...currentTournament.data, playoff8: playoff8, winners: winners}}})
+    await db.collection("tournaments").doc(currentTournament.id).update({playoff8: playoff8, winners: winners})
+}
+
+export async function updatePlayoff16(currentTournament, playoff16, winners, dispatch) {
+    dispatch({type: "currentTournament", payload: {...currentTournament, data: {...currentTournament.data, playoff16: playoff16, winners: winners}}})
+    await db.collection("tournaments").doc(currentTournament.id).update({playoff16: playoff16, winners: winners})
+}
+
+export async function updateWinners(currentTournament, data) {
+    await db.collection("tournaments").doc(currentTournament.id).update({winners: data})
+}
+
+export async function erasePlayoffData(currentTournament, dispatch) {
+    dispatch({type: "currentTournament", payload: {...currentTournament, data: {...currentTournament.data, winners: {"first": {}, "second": {}, "third": {}}, playoff16: [], playoff8: []}}})
+    await db.collection("tournaments").doc(currentTournament.id).update({winners: {"first": {}, "second": {}, "third": {}}, playoff16: [], playoff8: []})
+}
+
+
+function getPlayersDataFromStandings(standings) {
+    return (
+        standings.map(p => {
+            return (
+                {
+                    "name": p.name,
+                    "playerId": p.playerId,
+                    "participantId": p.participantId
+                }
+            )
+        })
+    )
+}
+
+export function getPlayoff8(standings) {
+    if (standings.length < 8) {
+        return []
+    }
+    const playersData = getPlayersDataFromStandings(standings)
+    const games = [
+        {   
+            "game": 1,
+            "player1": playersData[0],
+            "player2": playersData[7],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 4,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 6,
+            "looserPlayerNumber": "1",
+        },
+        {
+            "game": 2,
+            "player1": playersData[3],
+            "player2": playersData[4],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 4,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 6,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 3,
+            "player1": playersData[2],
+            "player2": playersData[5],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 5,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 7,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 4,
+            "player1": playersData[1],
+            "player2": playersData[6],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 5,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 7,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 5,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 8,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 10,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 6,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 8,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 9,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 7,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 9,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 8,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 10,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 9,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 13,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 12,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 10,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 11,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 11,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 11,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 12,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 12,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 13,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 13,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": "third",
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 14,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": "first",
+            "winnerPlayerNumber": null,
+            "looserNextGame": "second",
+            "looserPlayerNumber": null
+        }
+    ]
+
+    return games
+}
+export function getPlayoff16(standings) {
+    if (standings.length < 16) {
+        return []
+    }
+    const playersData = getPlayersDataFromStandings(standings)
+    const games = [
+        {   
+            "game": 1,
+            "player1": playersData[0],
+            "player2": playersData[15],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 8,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 12,
+            "looserPlayerNumber": "1",
+        },
+        {
+            "game": 2,
+            "player1": playersData[7],
+            "player2": playersData[8],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 8,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 12,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 3,
+            "player1": playersData[4],
+            "player2": playersData[11],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 9,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 13,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 4,
+            "player1": playersData[3],
+            "player2": playersData[12],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 9,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 13,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 5,
+            "player1": playersData[2],
+            "player2": playersData[13],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 10,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 14,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 6,
+            "player1": playersData[5],
+            "player2": playersData[10],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 10,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 14,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 7,
+            "player1": playersData[6],
+            "player2": playersData[9],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 11,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 15,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 8,
+            "player1": playersData[1],
+            "player2": playersData[14],
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 11,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 15,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 9,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 20,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 19,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 10,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 20,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 18,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 11,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 21,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 17,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 12,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 21,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 16,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 13,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 16,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 14,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 17,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {   
+            "game": 15,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 18,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null,
+        },
+        {
+            "game": 16,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 19,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 17,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 22,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 18,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 22,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 19,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 23,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 20,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 23,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 21,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 26,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 24,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 22,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 27,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 25,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 23,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 24,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 24,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 25,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 25,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 27,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 26,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 26,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 27,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 29,
+            "winnerPlayerNumber": "1",
+            "looserNextGame": 28,
+            "looserPlayerNumber": "1"
+        },
+        {
+            "game": 28,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": 29,
+            "winnerPlayerNumber": "2",
+            "looserNextGame": 28,
+            "looserPlayerNumber": "2"
+        },
+        {
+            "game": 29,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": "third",
+            "winnerPlayerNumber": null,
+            "looserNextGame": null,
+            "looserPlayerNumber": null
+        },
+        {
+            "game": 30,
+            "player1": "",
+            "player2": "",
+            "player1Score": "",
+            "player2Score": "",
+            "winnerNextGame": "first",
+            "winnerPlayerNumber": null,
+            "looserNextGame": "second",
+            "looserPlayerNumber": null
+        }
+    ]
+
+    return games
+}

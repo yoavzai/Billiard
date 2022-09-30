@@ -7,6 +7,8 @@ import {
   getRoundByIdFromServer,
   getStandings,
   isValidUpdatePlayer,
+  unfreezeParticipant,
+  updateParticipantOnServer,
   updatePlayer,
 } from "./utils";
 
@@ -96,6 +98,42 @@ export default function ParticipantComp(props) {
     }
 
     setIsRemoveParticipantConfirmation(true);
+  }
+
+  async function notArrivedToPlayoff() {
+    const participantNewData = {...participant.data, arrivedToPlayoff: false}
+    const newParticipants = participants.map(p => {
+      if (p.id === participant.id) {
+        return {...participant, data: participantNewData}
+      }
+      else {
+        return p
+      }
+    })
+    dispatch({type: "participants", payload: newParticipants})
+    await updateParticipantOnServer(currentTournament.id, participant.id, participantNewData)
+    const [standings, allResults] = await getStandings(currentTournament.id)
+    dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
+  }
+
+  async function arrivedToPlayoff() {
+    const participantNewData = {...participant.data, arrivedToPlayoff: true}
+    const newParticipants = participants.map(p => {
+      if (p.id === participant.id) {
+        return {...participant, data: participantNewData}
+      }
+      else {
+        return p
+      }
+    })
+    dispatch({type: "participants", payload: newParticipants})
+    await updateParticipantOnServer(currentTournament.id, participant.id, participantNewData)
+    const [standings, allResults] = await getStandings(currentTournament.id)
+    dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
+  }
+
+  async function returnParticipantBtnClick() {
+    unfreezeParticipant(currentTournament.id, participant.id, currentRound, participants, tables, dispatch)
   }
 
   return (
@@ -195,19 +233,37 @@ export default function ParticipantComp(props) {
         </div>
       ) : (
         <div>
+          {participant.data.active && participant.data.arrivedToPlayoff &&
           <div className="buttons_container">
             <button className="button edit_button" onClick={editPlayer}>
               ערוך
             </button>
-            {participant.data.active &&
             <button
               className="button delete_button"
               onClick={removeParticipantBtnClick}
             >
               מחק
             </button>
-            }
+            <button className="button not_arrived_to_playoff_btn" onClick={notArrivedToPlayoff}>
+              לא הגיע לפלייאוף
+            </button>
           </div>
+          }
+          {!participant.data.active &&
+          <div className="buttons_container">
+            <button
+              className="button"
+              onClick={returnParticipantBtnClick}
+            >
+              החזר
+            </button>
+          </div>
+          }
+          {!participant.data.arrivedToPlayoff &&
+          <button className="button arrived_to_playoff_btn" onClick={arrivedToPlayoff}>
+            הגיע לפלייאוף
+          </button>
+          }
         </div>
       )}
       {/* {isUpdatePlayerConfirmation && 

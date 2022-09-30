@@ -60,9 +60,10 @@ export default function ParticipantsComp() {
       playerId: player.id,
       date: time.getTime(),
       participantsToPlayIds: participants.filter(p => p.data.active).map((participant) => participant.id),
-      active: true
+      active: true,
+      arrivedToPlayoff: true
     };
-    await addParticipant(
+    addParticipant(
       newParticipantData,
       currentTournament.id,
       participants,
@@ -326,7 +327,7 @@ export default function ParticipantsComp() {
         {sortBy === "name" ? 
           sortedParticipantsByName().map((participant) => {
             return (
-              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"}`} key={participant.id}>
+              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"} ${participant.data.arrivedToPlayoff ? "" : "par_not_arrived_to_playoff"}`} key={participant.id}>
                 <div>
                   <ParticipantComp participant={participant}></ParticipantComp>
                 </div>
@@ -339,7 +340,7 @@ export default function ParticipantsComp() {
           :
           sortedParticipantsByGamesLeft().map((participant) => {
             return (
-              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"}`} key={participant.id}>
+              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"} ${participant.data.arrivedToPlayoff ? "" : "par_not_arrived_to_playoff"}`} key={participant.id}>
                 <div>
                   <ParticipantComp participant={participant}></ParticipantComp>
                 </div>

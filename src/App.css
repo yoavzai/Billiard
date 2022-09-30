@@ -584,6 +584,10 @@ body.round_open::before {
   border-collapse: collapse;
 }
 
+.par_not_arrived_to_playoff {
+  background-color: rgb(196, 193, 193);
+}
+
 .par_not_active {
   background-color: gray;
 }
@@ -629,6 +633,32 @@ body.round_open::before {
   box-shadow: none;
   padding: 0;
   background: url("./delete-icon.svg") no-repeat center center;
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+  font-size: 0;
+  border-radius: 0;
+  display: block;
+}
+
+.not_arrived_to_playoff_btn {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background: url("./lock-icon.svg") no-repeat center center;
+  background-size: contain;
+  width: 18px;
+  height: 18px;
+  font-size: 0;
+  border-radius: 0;
+  display: block;
+}
+
+.arrived_to_playoff_btn {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  background: url("./unlock-icon.svg") no-repeat center center;
   background-size: contain;
   width: 18px;
   height: 18px;

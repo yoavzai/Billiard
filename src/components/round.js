@@ -199,7 +199,7 @@ export default function RoundComp() {
   return (
     <div>
       {Object.keys(currentRound).length > 0 && (
-        <div id="round_container" className="container round_container" onScroll={(e) => setScrollTopPos(e.target.scrollTop)}>
+        <div id="round_container" className={`container round_container ${!currentRound.data.isActive ? "inactive_round" : ""}`} onScroll={(e) => setScrollTopPos(e.target.scrollTop)}>
           <div className="buttons_container close_button_container">
             <button
               className="button close_button"
@@ -248,7 +248,7 @@ export default function RoundComp() {
             </span>
             <span>{currentRound.data.isActive ? "(פעיל)" : "(הסתיים)"}</span>
           </h3>
-
+          {currentRound.data.isActive &&
           <div className="participants_box container">
             {isFinishRoundErrorMessage && (
               <div className="error_message_container">
@@ -293,31 +293,21 @@ export default function RoundComp() {
                             index={index}
                           ></RoundParticipant>
                         </td>
-                        {currentRound.data.isActive && (
-                          <td className="t_num">
-                            {getParticipantTableNumber(participant.id)}
-                            {/* <RoundParticipantTableComp 
-                                                participant={participant}
-                                                addParticipantToNewGame={addParticipantToNewGame}>
-                                        </RoundParticipantTableComp> */}
-                          </td>
-                        )}
-                        {currentRound.data.isActive &&
-                          <td className="opp_info">
-                            {isParticipantArrived(currentRound,  participant.id) &&
-                            <RoundParticipantPossibleRivalsComp
-                              participant={participant}
-                            ></RoundParticipantPossibleRivalsComp>
-                            }
-                          </td>
-                        }
-                        {currentRound.data.isActive &&
-                            <td className="left_games">
-                              <RoundParticipantGamesLeftComp
-                                participant={participant}>
-                              </RoundParticipantGamesLeftComp>
-                            </td>
+                        <td className="t_num">
+                          {getParticipantTableNumber(participant.id)}
+                        </td>
+                        <td className="opp_info">
+                          {isParticipantArrived(currentRound,  participant.id) &&
+                          <RoundParticipantPossibleRivalsComp
+                            participant={participant}
+                          ></RoundParticipantPossibleRivalsComp>
                           }
+                        </td>
+                        <td className="left_games">
+                          <RoundParticipantGamesLeftComp
+                            participant={participant}>
+                          </RoundParticipantGamesLeftComp>
+                        </td>
                       </tr>
                     );
                   })}
@@ -325,6 +315,7 @@ export default function RoundComp() {
               </table>
             </div>
           </div>
+          }
           {currentRound?.data?.isActive ? (
             <TablesComp></TablesComp>
           ) : (
