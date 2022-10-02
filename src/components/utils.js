@@ -1095,7 +1095,6 @@ export async function updateTablesNumbers(table1, num1, table2, num2, tables, di
         return t
     })
 
-    console.log(newTables)
 
     dispatch({type: "tables", payload: newTables})
     await updateTableOnServer(table1.id, table1NewData)
@@ -1497,6 +1496,17 @@ export async function erasePlayoffData(currentTournament, dispatch) {
     await db.collection("tournaments").doc(currentTournament.id).update({winners: {"first": {}, "second": {}, "third": {}}, playoff16: [], playoff8: []})
 }
 
+export function getMissingsAmount(participant, participants) {
+    let gamesLeft = participant.data.participantsToPlayIds.length
+    if (participant.data.active) {
+      gamesLeft =  participant.data.participantsToPlayIds.filter(id => {
+        const p = getParticipantByIdFromStore(id, participants)
+        return p.data.active
+      }).length
+    }
+
+    return Math.floor(gamesLeft/4)
+  }
 
 function getPlayersDataFromStandings(standings) {
     return (
@@ -1676,6 +1686,8 @@ export function getPlayoff8(standings) {
 
     return games
 }
+
+
 export function getPlayoff16(standings) {
     if (standings.length < 16) {
         return []

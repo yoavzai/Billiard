@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlayerResultsComp from "./playerResults";
-import { getParticipantByIdFromStore } from "./utils";
+import { getMissingsAmount, getParticipantByIdFromStore } from "./utils";
 
 export default function StandingsComp() {
 
-  const dispatch = useDispatch()
   const standings = useSelector((state) => state.standings);
   const participants = useSelector((state) => state.participants);
   const [isPresentPlayerResults, setIsPresentPlayerResults] = useState(false);
@@ -34,17 +33,6 @@ export default function StandingsComp() {
     setPlayerToPresentResults({});
   }
 
-  function getMissingsAmount(participant) {
-    let gamesLeft = participant.data.participantsToPlayIds.length
-    if (participant.data.active) {
-      gamesLeft =  participant.data.participantsToPlayIds.filter(id => {
-        const p = getParticipantByIdFromStore(id, participants)
-        return p.data.active
-      }).length
-    }
-
-    return Math.floor(gamesLeft/4)
-  }
 
   return (
     <div className="container standings_container">
@@ -73,7 +61,7 @@ export default function StandingsComp() {
                 <td>{player.wins}</td>
                 <td>{player.losses}</td>
                 <td><span className="difference">{player.plusMinus}</span></td>
-                <td>{getMissingsAmount(participant)}</td>
+                <td>{getMissingsAmount(participant, participants)}</td>
                 <td>
                   <button
                     id={player.participantId + "presentResults"}

@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RoundComp from "./round";
-import { addRound, setRound } from "./utils";
+import RoundResultComp from "./roundResult";
+import { addRound, getMissingsAmount, getPlayerByParticipantIdFromStore, getRoundByIdFromServer, getStandings, setRound, updateParticipantOnServer, updateRoundOnServer } from "./utils";
 
 export default function RoundsComp() {
   const dispatch = useDispatch();
   const currentTournament = useSelector((state) => state.currentTournament);
+  const rankings = useSelector((state) => state.rankings);
+  const participants = useSelector((state) => state.participants);
+  const players = useSelector((state) => state.players);
   const rounds = useSelector((state) => state.rounds);
   const months = useSelector((state) => state.months);
   const [isNewRoundConfirmation, setIsNewRoundConfirmation] = useState(false);
   const [isRoundSelected, setIsRoundSelected] = useState(false);
+  const [isTechnicalsButton, setIsTechnicalsButton] = useState(true);
+  const [isTechnicalsConfirmation, setIsTechnicalsConfirmation] = useState(true);
+  const [technicalResults, setTechnicalResults] = useState([]);
+  const [newParticipants, setNewParticipants] = useState([]);
   const [startDate, setStartDate] = useState({
     fullDate: "",
     day: "",
@@ -25,13 +33,20 @@ export default function RoundsComp() {
     setIsNewRoundConfirmation(false);
     setIsLoadingNewround(true);
     const newRoundNumber = rounds.length + 1;
+    const missings = {}
+    for (const p of participants) {
+      missings[p.id] = getMissingsAmount(p, participants)
+    }
+  
     const newRoundData = {
       startDate: startDate,
       number: newRoundNumber,
       arrivedParticipants: [],
       results: [],
       isActive: true,
+      missings: missings
     };
+
     await addRound(currentTournament.id, newRoundData, dispatch);
     setIsRoundSelected(true);
     setIsLoadingNewround(false);
@@ -80,6 +95,99 @@ export default function RoundsComp() {
     setIsNewRoundConfirmation(true);
   }
 
+
+  function isGameInResults(name1, name2, results) {
+    for (const r of results) {
+      if ((r.winner === name1 && r.looser === name2) || (r.winner === name2 && r.looser === name1)) {
+        return true
+      }
+    }
+    return false
+  }
+
+
+  function produceTechnicalResult(winnerParticipantId, looserParticipantId, roundNumber) {
+
+    let result = {"id": winnerParticipantId+looserParticipantId,
+                  "roundNumber": roundNumber,
+                  "participant1": {"id": winnerParticipantId, "score": '3', "won": true},
+                  "participant2": {"id": looserParticipantId, "score": '0', "won": false}}
+    let winnerRanking = getPlayerByParticipantIdFromStore(winnerParticipantId, participants, players).data.ranking
+    let looserRanking = getPlayerByParticipantIdFromStore(looserParticipantId, participants, players).data.ranking
+    winnerRanking = rankings.indexOf(winnerRanking)
+    looserRanking = rankings.indexOf(looserRanking)
+    const difference = winnerRanking - looserRanking
+
+    if (difference > 2) {
+        result = {...result, "participant2": {...result.participant2, "score": "2"}}
+    }
+    else if (difference === 2) {
+        result = {...result, "participant2": {...result.participant2, "score": "1"}}
+    }
+
+    return result
+  }
+
+  async function calcTechnicalsBtnClick() {
+    calcTechnicals()
+    setIsTechnicalsConfirmation(true)
+  }
+  
+  async function technicalResultsConfirmed () {
+    setIsTechnicalsConfirmation(false)
+    const lastRound = await getRoundByIdFromServer(currentTournament.id, rounds[0].id)
+    const roundNewData = {...lastRound.data, results: lastRound.data.results.concat(technicalResults)}
+    dispatch({type: "participants", payload: newParticipants})
+    await updateRoundOnServer(currentTournament.id, lastRound.id, roundNewData)
+    const [standings, allResults] = await getStandings(currentTournament.id)
+    dispatch({type: "standings", payload: {"standings": standings, "allResults": allResults}})
+    for (const p of newParticipants) {
+      await updateParticipantOnServer(currentTournament.id, p.id, p.data)
+    }
+  }
+
+  async function calcTechnicals() {
+    const lastRound = await getRoundByIdFromServer(currentTournament.id, rounds[0].id)
+    const missings = lastRound.data.missings
+    const arrivedParticipants = lastRound.data.arrivedParticipants
+    const roundNumber = lastRound.data.number
+    const technicalResults = []
+    const newParticipants = participants.map(p => {
+      if (!p.data.active) {
+        return p
+      }
+      const newParticipantsToPlayIds = []
+      const missingGames = missings[p.id]
+
+      for (const rivalParticipantId of p.data.participantsToPlayIds) {
+        if (isGameInResults(p.id, rivalParticipantId, technicalResults)) {
+          continue
+        } 
+        const rivalMissingGames = missings[rivalParticipantId]
+        if ((missingGames === 0 && rivalMissingGames > 1) || 
+            (missingGames === 1 && rivalMissingGames > 1 && arrivedParticipants.map(p => p.participantId).includes(p.id))) {
+            technicalResults.push(produceTechnicalResult(p.id, rivalParticipantId, roundNumber))  
+        }
+        else {
+          newParticipantsToPlayIds.push(rivalParticipantId)
+        }
+      }
+      return {...p, data: {...p.data, participantsToPlayIds: newParticipantsToPlayIds}}
+    })
+
+    setTechnicalResults(technicalResults)
+    setNewParticipants(newParticipants)
+
+    // const roundNewData = {...lastRound.data, results: lastRound.data.results.concat(technicalResults)}
+    // dispatch({type: "participants", payload: newParticipants})
+    // await updateRoundOnServer(currentTournament.id, lastRound.id, roundNewData)
+    // const [standings, allResults] = await getStandings(currentTournament.id)
+    // dispatch({type: "standings", payload: {"standings": standings, "allResults": allResults}})
+    // for (const p of newParticipants) {
+    //   await updateParticipantOnServer(currentTournament.id, p.id, p.data)
+    // }
+  }
+
   return (
     <div className="container rounds_container">
       <h3>בחר סיבוב</h3>
@@ -114,8 +222,29 @@ export default function RoundsComp() {
           <button className="button" onClick={startNewRoundBtnClick}>
             התחל סיבוב חדש
           </button>
+          <button className="button" onClick={calcTechnicalsBtnClick}>
+            חשב טכניים
+          </button>
         </div>
       )}
+      {isTechnicalsConfirmation &&
+      <div>
+        <span>האם להוסיף את התוצאות הבאות לסיבוב האחרון?</span>
+        {technicalResults.map(r => {
+          return (
+            <RoundResultComp key={r.id} result={r}></RoundResultComp>
+          )
+        })}
+        <div className="buttons_container">
+          <button className="button" onClick={technicalResultsConfirmed}>
+            כן
+          </button>
+          <button className="button" onClick={() => setIsTechnicalsConfirmation(false)}>
+            לא
+          </button>
+        </div>
+      </div>
+      }
       {isNewRoundConfirmation && (
         <div className="confirmation_container">
           <span>להתחיל סיבוב</span>

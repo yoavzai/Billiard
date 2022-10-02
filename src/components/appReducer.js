@@ -71,7 +71,6 @@ const appReducer = (state = {
       return {...state, currentRound: data}
     
     case "currentTournament" :
-      console.log(data)
       return {...state, currentTournament: data}
     
     case "tournaments" :
