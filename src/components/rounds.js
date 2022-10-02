@@ -15,7 +15,7 @@ export default function RoundsComp() {
   const [isNewRoundConfirmation, setIsNewRoundConfirmation] = useState(false);
   const [isRoundSelected, setIsRoundSelected] = useState(false);
   const [isTechnicalsButton, setIsTechnicalsButton] = useState(true);
-  const [isTechnicalsConfirmation, setIsTechnicalsConfirmation] = useState(true);
+  const [isTechnicalsConfirmation, setIsTechnicalsConfirmation] = useState(false);
   const [technicalResults, setTechnicalResults] = useState([]);
   const [newParticipants, setNewParticipants] = useState([]);
   const [startDate, setStartDate] = useState({
