@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import PlayerResultComp from "./playerResult";
-import { getParticipantByIdFromStore, getPlayerByParticipantIdFromStore } from "./utils";
+import {
+  getParticipantByIdFromStore,
+  getPlayerByParticipantIdFromStore,
+} from "./utils";
 
 export default function PlayerResultsComp(props) {
   const player = props.player;
   const participants = useSelector((state) => state.participants);
   const players = useSelector((state) => state.players);
   const rounds = useSelector((state) => state.rounds);
-  const [orderBy, setOrderBy] = useState("round")
+  const [orderBy, setOrderBy] = useState("round");
 
   function playerResultsByRound() {
     let playerResults = {};
@@ -16,9 +19,16 @@ export default function PlayerResultsComp(props) {
       playerResults[round.data.number] = [];
     }
     for (const result of player.results) {
-      const participant1 = getParticipantByIdFromStore(result.participant1.id, participants)
-      const participant2 = getParticipantByIdFromStore(result.participant2.id, participants)
-      const active = participant1.data.active && participant2.data.active ? true : false
+      const participant1 = getParticipantByIdFromStore(
+        result.participant1.id,
+        participants
+      );
+      const participant2 = getParticipantByIdFromStore(
+        result.participant2.id,
+        participants
+      );
+      const active =
+        participant1.data.active && participant2.data.active ? true : false;
       if (result.participant1.id === player.participantId) {
         const won = result.participant1.won;
         const player1Name = player.name;
@@ -37,7 +47,7 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 1,
           originalResult: result,
-          active: active
+          active: active,
         });
       } else if (result.participant2.id === player.participantId) {
         const won = result.participant2.won;
@@ -57,19 +67,26 @@ export default function PlayerResultsComp(props) {
           won: won,
           originalParticipantNumber: 2,
           originalResult: result,
-          active: active
+          active: active,
         });
       }
     }
     return playerResults;
   }
- 
+
   function playerResultsByName() {
     let playerResults = [];
     for (const result of player.results) {
-      const participant1 = getParticipantByIdFromStore(result.participant1.id, participants)
-      const participant2 = getParticipantByIdFromStore(result.participant2.id, participants)
-      const active = participant1.data.active && participant2.data.active ? true : false
+      const participant1 = getParticipantByIdFromStore(
+        result.participant1.id,
+        participants
+      );
+      const participant2 = getParticipantByIdFromStore(
+        result.participant2.id,
+        participants
+      );
+      const active =
+        participant1.data.active && participant2.data.active ? true : false;
       if (result.participant1.id === player.participantId) {
         const won = result.participant1.won;
         const player1Name = player.name;
@@ -89,7 +106,7 @@ export default function PlayerResultsComp(props) {
           originalParticipantNumber: 1,
           originalResult: result,
           roundNumber: result.roundNumber,
-          active: active
+          active: active,
         });
       } else if (result.participant2.id === player.participantId) {
         const won = result.participant2.won;
@@ -110,15 +127,14 @@ export default function PlayerResultsComp(props) {
           originalParticipantNumber: 2,
           originalResult: result,
           roundNumber: result.roundNumber,
-          active: active
+          active: active,
         });
       }
     }
-    return playerResults.sort((a,b) => {
-      return a.player2Name.localeCompare(b.player2Name)
+    return playerResults.sort((a, b) => {
+      return a.player2Name.localeCompare(b.player2Name);
     });
   }
-
 
   return (
     <div className="container player_results_container">
@@ -131,9 +147,19 @@ export default function PlayerResultsComp(props) {
         </button>
       </div>
       <h3>{player.name}</h3>
-      <div className="buttons_container">
-        <button onClick={() => setOrderBy("name")}>לפי שם</button>
-        <button onClick={() => setOrderBy("round")}>לפי סיבוב</button>
+      <div className="buttons_container filter_box">
+        <button
+          className={`button ${orderBy === "name" ? "active" : ""}`}
+          onClick={() => setOrderBy("name")}
+        >
+          לפי שם
+        </button>
+        <button
+          className={`button ${orderBy === "name" ? "" : "active"}`}
+          onClick={() => setOrderBy("round")}
+        >
+          לפי סיבוב
+        </button>
       </div>
       {orderBy === "round" &&
         Object.entries(playerResultsByRound()).map((round) => {
@@ -163,8 +189,7 @@ export default function PlayerResultsComp(props) {
               )}
             </div>
           );
-          })
-      }
+        })}
       {orderBy === "name" &&
         playerResultsByName().map((result, index) => {
           return (
@@ -176,8 +201,7 @@ export default function PlayerResultsComp(props) {
               ></PlayerResultComp>
             </div>
           );
-          })
-      }
+        })}
     </div>
   );
 }

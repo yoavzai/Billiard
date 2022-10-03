@@ -12,7 +12,6 @@ import {
 } from "./utils";
 
 export default function ParticipantsComp() {
-
   const dispatch = useDispatch();
   const rankings = useSelector((state) => state.rankings);
   const participants = useSelector((state) => state.participants);
@@ -30,7 +29,7 @@ export default function ParticipantsComp() {
   const [playerOptions, setPlayerOptions] = useState([]);
   const [isAddingToServer, setIsAddingToServer] = useState(false);
   const [isPresentPlayerOptions, setIsPresentPlayerOptions] = useState(false);
-  const [sortBy, setSortBy] = useState("name")
+  const [sortBy, setSortBy] = useState("name");
 
   async function addNewPlayer() {
     setIsAddPlayer(false);
@@ -59,9 +58,11 @@ export default function ParticipantsComp() {
     const newParticipantData = {
       playerId: player.id,
       date: time.getTime(),
-      participantsToPlayIds: participants.filter(p => p.data.active).map((participant) => participant.id),
+      participantsToPlayIds: participants
+        .filter((p) => p.data.active)
+        .map((participant) => participant.id),
       active: true,
-      arrivedToPlayoff: true
+      arrivedToPlayoff: true,
     };
     addParticipant(
       newParticipantData,
@@ -102,7 +103,7 @@ export default function ParticipantsComp() {
     setIsAddPlayerErrorMessage(false);
     setWantedPlayerName(e.target.value);
     if (e.target.value.length === 0) {
-      setIsPresentPlayerOptions(false)
+      setIsPresentPlayerOptions(false);
       setPlayerOptions([]);
       return;
     }
@@ -111,8 +112,8 @@ export default function ParticipantsComp() {
       playersNotRegistered(players, participants).filter((player) =>
         player.data.name.toLowerCase().startsWith(e.target.value.toLowerCase())
       )
-      );
-      setIsPresentPlayerOptions(true)
+    );
+    setIsPresentPlayerOptions(true);
   }
 
   function cancelNewPlayer() {
@@ -135,53 +136,59 @@ export default function ParticipantsComp() {
   }
 
   function sortedParticipantsByName() {
-    return participants.sort((a,b) => {
-      const name1 = getPlayerByParticipantIdFromStore(a.id, participants, players)?.data?.name
-      const name2 = getPlayerByParticipantIdFromStore(b.id, participants, players)?.data?.name
-      return name1.localeCompare(name2)
-    })
+    return participants.sort((a, b) => {
+      const name1 = getPlayerByParticipantIdFromStore(
+        a.id,
+        participants,
+        players
+      )?.data?.name;
+      const name2 = getPlayerByParticipantIdFromStore(
+        b.id,
+        participants,
+        players
+      )?.data?.name;
+      return name1.localeCompare(name2);
+    });
   }
 
   function searchPlayerKeyPress(e) {
     if (playerOptions.length === 0) {
-      return
+      return;
     }
     if (e.code === "ArrowDown") {
-      e.preventDefault()
-      const firstOption = document.getElementById("player_options0")
-      firstOption.focus()
+      e.preventDefault();
+      const firstOption = document.getElementById("player_options0");
+      firstOption.focus();
     }
   }
 
   function playerOptionKeyPress(e) {
-    e.preventDefault()
-    const playerOptionIndex = Number(e.target.id[e.target.id.length - 1])
+    e.preventDefault();
+    const playerOptionIndex = Number(e.target.id[e.target.id.length - 1]);
     if (e.code === "ArrowDown") {
       if (playerOptions.length - 1 === playerOptionIndex) {
-        return
+        return;
       }
-      const nextOptionId = "player_options" + String(playerOptionIndex+1)
-      const nextOption = document.getElementById(nextOptionId)
-      nextOption.focus()
-    }
-    else if (e.code === "ArrowUp") {
+      const nextOptionId = "player_options" + String(playerOptionIndex + 1);
+      const nextOption = document.getElementById(nextOptionId);
+      nextOption.focus();
+    } else if (e.code === "ArrowUp") {
       if (playerOptionIndex === 0) {
-        const searchInput = document.getElementById("choose-players-text-input")
-        searchInput.focus()
+        const searchInput = document.getElementById(
+          "choose-players-text-input"
+        );
+        searchInput.focus();
+      } else {
+        const prevOptionId = "player_options" + String(playerOptionIndex - 1);
+        const prevOption = document.getElementById(prevOptionId);
+        prevOption.focus();
       }
-      else {
-        const prevOptionId = "player_options" + String(playerOptionIndex-1)
-        const prevOption = document.getElementById(prevOptionId)
-        prevOption.focus()
-      }
-    }
-    else if (e.code === "Escape") {
-      setIsPresentPlayerOptions(false)
-      const searchInput = document.getElementById("choose-players-text-input")
-      searchInput.focus()
-    }
-    else if(e.code === "Enter") {
-      e.target.click()
+    } else if (e.code === "Escape") {
+      setIsPresentPlayerOptions(false);
+      const searchInput = document.getElementById("choose-players-text-input");
+      searchInput.focus();
+    } else if (e.code === "Enter") {
+      e.target.click();
     }
   }
 
@@ -209,16 +216,16 @@ export default function ParticipantsComp() {
                   {playerOptions.map((p, i) => {
                     return (
                       <span
-                        id={"player_options"+i}
+                        id={"player_options" + i}
                         tabIndex="0"
                         style={{ display: "block" }}
                         key={p.data.name}
                         onKeyDown={playerOptionKeyPress}
-                        onMouseEnter={e => e.target.focus()}
+                        onMouseEnter={(e) => e.target.focus()}
                         onClick={(e) => {
                           setWantedPlayerName(p.data.name);
                           setPlayerOptions([]);
-                          setIsPresentPlayerOptions(false)
+                          setIsPresentPlayerOptions(false);
                         }}
                       >
                         {p.data.name}
@@ -319,38 +326,68 @@ export default function ParticipantsComp() {
           )}
         </div>
       )}
-      <div className="buttons_container">
-            <button onClick={() => setSortBy("name")}>לפי שם</button>
-            <button onClick={() => setSortBy("games left")}>לפי משחקים שנשארו</button>
+      <div className="buttons_container filter_box">
+        <button
+          className={`button ${sortBy === "name" ? "active" : ""}`}
+          onClick={() => setSortBy("name")}
+        >
+          לפי שם
+        </button>
+        <button
+          className={`button ${sortBy === "name" ? "" : "active"}`}
+          onClick={() => setSortBy("games left")}
+        >
+          לפי משחקים שנשארו
+        </button>
       </div>
       <div className="participants_table">
-        {sortBy === "name" ? 
-          sortedParticipantsByName().map((participant) => {
-            return (
-              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"} ${participant.data.arrivedToPlayoff ? "" : "par_not_arrived_to_playoff"}`} key={participant.id}>
-                <div>
-                  <ParticipantComp participant={participant}></ParticipantComp>
+        {sortBy === "name"
+          ? sortedParticipantsByName().map((participant) => {
+              return (
+                <div
+                  className={`participant_box container  ${
+                    participant.data.active ? "" : "par_not_active"
+                  } ${
+                    participant.data.arrivedToPlayoff
+                      ? ""
+                      : "par_not_arrived_to_playoff"
+                  }`}
+                  key={participant.id}
+                >
+                  <div>
+                    <ParticipantComp
+                      participant={participant}
+                    ></ParticipantComp>
+                  </div>
+                  <div>
+                    <GamesLeftComp participant={participant}></GamesLeftComp>
+                  </div>
                 </div>
-                <div>
-                  <GamesLeftComp participant={participant}></GamesLeftComp>
+              );
+            })
+          : sortedParticipantsByGamesLeft().map((participant) => {
+              return (
+                <div
+                  className={`participant_box container  ${
+                    participant.data.active ? "" : "par_not_active"
+                  } ${
+                    participant.data.arrivedToPlayoff
+                      ? ""
+                      : "par_not_arrived_to_playoff"
+                  }`}
+                  key={participant.id}
+                >
+                  <div>
+                    <ParticipantComp
+                      participant={participant}
+                    ></ParticipantComp>
+                  </div>
+                  <div>
+                    <GamesLeftComp participant={participant}></GamesLeftComp>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-          :
-          sortedParticipantsByGamesLeft().map((participant) => {
-            return (
-              <div className={`participant_box container  ${participant.data.active ? "" : "par_not_active"} ${participant.data.arrivedToPlayoff ? "" : "par_not_arrived_to_playoff"}`} key={participant.id}>
-                <div>
-                  <ParticipantComp participant={participant}></ParticipantComp>
-                </div>
-                <div>
-                  <GamesLeftComp participant={participant}></GamesLeftComp>
-                </div>
-              </div>
-            );
-          })
-        }
+              );
+            })}
       </div>
     </div>
   );

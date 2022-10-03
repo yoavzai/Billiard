@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import { RoundParticipantPossibleRivalsComp } from "./roundParticipantPossibleRivals";
 import RoundParticipantGamesLeftComp from "./roundParticipantGamesLeft";
 
-
 export default function RoundComp() {
   const dispatch = useDispatch();
   const tables = useSelector((state) => state.tables);
@@ -21,19 +20,18 @@ export default function RoundComp() {
   const participants = useSelector((state) => state.participants);
   const currentTournament = useSelector((state) => state.currentTournament);
   const currentRound = useSelector((state) => state.currentRound);
-  const [scrollTopPos, setScrollTopPos] = useState(0)
+  const [scrollTopPos, setScrollTopPos] = useState(0);
   const [isFinishRoundErrorMessage, setIsFinishRoundErrorMessage] =
     useState(false);
   const [isFinishRoundConfirmation, setIsFinishRoundConfirmation] =
     useState(false);
 
-  
   useEffect(() => {
-    const roundDiv = document.getElementById("round_container")
+    const roundDiv = document.getElementById("round_container");
     if (roundDiv != null) {
-      roundDiv.scrollTo(0, Number(scrollTopPos))
+      roundDiv.scrollTo(0, Number(scrollTopPos));
     }
-  }, [tables, currentRound])
+  }, [tables, currentRound]);
 
   function finishRoundBtnClick() {
     for (const table of tables) {
@@ -86,7 +84,7 @@ export default function RoundComp() {
         }
       }
     });
-    return sortedParticipants.filter(p => p.data.active);
+    return sortedParticipants.filter((p) => p.data.active);
   }
 
   // function clearRoundParticipantTableNumber(participantId) {
@@ -163,43 +161,53 @@ export default function RoundComp() {
   }
 
   function checkAllPosibleRivals() {
-    const openButtons = Array.from(document.getElementsByClassName("possible_rivals_button_open"))
-    const allButtons = Array.from(document.getElementsByClassName("possible_rivals_button"))
+    const openButtons = Array.from(
+      document.getElementsByClassName("possible_rivals_button_open")
+    );
+    const allButtons = Array.from(
+      document.getElementsByClassName("possible_rivals_button")
+    );
     if (openButtons.length === allButtons.length) {
       for (const b of allButtons) {
-        b.click()
+        b.click();
       }
-    }
-    else {
-      const buttonsToClick = allButtons.filter(b => !openButtons.includes(b))
+    } else {
+      const buttonsToClick = allButtons.filter((b) => !openButtons.includes(b));
       for (const button of buttonsToClick) {
-        button.click()
+        button.click();
       }
-
     }
   }
 
   function checkAllGamesLeft() {
-    const openButtons = Array.from(document.getElementsByClassName("games_left_button_open"))
-    const allButtons = Array.from(document.getElementsByClassName("games_left_button"))
+    const openButtons = Array.from(
+      document.getElementsByClassName("games_left_button_open")
+    );
+    const allButtons = Array.from(
+      document.getElementsByClassName("games_left_button")
+    );
     if (openButtons.length === allButtons.length) {
       for (const b of allButtons) {
-        b.click()
+        b.click();
       }
-    }
-    else {
-      const buttonsToClick = allButtons.filter(b => !openButtons.includes(b))
+    } else {
+      const buttonsToClick = allButtons.filter((b) => !openButtons.includes(b));
       for (const button of buttonsToClick) {
-        button.click()
+        button.click();
       }
-
     }
   }
 
   return (
     <div>
       {Object.keys(currentRound).length > 0 && (
-        <div id="round_container" className={`container round_container ${!currentRound.data.isActive ? "inactive_round" : ""}`} onScroll={(e) => setScrollTopPos(e.target.scrollTop)}>
+        <div
+          id="round_container"
+          className={`container round_container ${
+            !currentRound.data.isActive ? "inactive_round" : ""
+          }`}
+          onScroll={(e) => setScrollTopPos(e.target.scrollTop)}
+        >
           <div className="buttons_container close_button_container">
             <button
               className="button close_button"
@@ -248,74 +256,97 @@ export default function RoundComp() {
             </span>
             <span>{currentRound.data.isActive ? "(פעיל)" : "(הסתיים)"}</span>
           </h3>
-          {currentRound.data.isActive &&
-          <div className="participants_box container">
-            {isFinishRoundErrorMessage && (
-              <div className="error_message_container">
-                <span>אי אפשר לסיים סיבוב בזמן שקיימים משחקים פעילים</span>
-                <div className="buttons_container">
-                  <button
-                    className="button ok_button"
-                    onClick={() => setIsFinishRoundErrorMessage(false)}
-                  >
-                    Ok
-                  </button>
+          {currentRound.data.isActive && (
+            <div className="participants_box container">
+              {isFinishRoundErrorMessage && (
+                <div className="error_message_container">
+                  <span>אי אפשר לסיים סיבוב בזמן שקיימים משחקים פעילים</span>
+                  <div className="buttons_container">
+                    <button
+                      className="button ok_button"
+                      onClick={() => setIsFinishRoundErrorMessage(false)}
+                    >
+                      Ok
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <h4>{`משתתפים נוכחים (${currentRound?.data?.arrivedParticipants?.length})`}</h4>
-            <div className="arrived_participants_table_container">
-              <table className="table arrived_participants_table">
-                <thead>
-                  <tr>
-                    <th className="pa_name">שם</th>                  
-                    <th className="t_num">שולחן</th>
-                    <th className="opp_info" >יריבים אפשריים<button className="button info_all_rivals_button" onClick={checkAllPosibleRivals}>הצג הכל</button></th>
-                    <th className="left_games">משחקים שנותרו<button className="button info_all_games_left_button" onClick={checkAllGamesLeft}>הצג הכל</button></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedRoundParticipants().map((participant, index) => {
-                    return (
-                      <tr key={participant.id}>
-                        <td className="pa_name">
-                          <RoundParticipant
-                            participant={participant}
-                            name={
-                              getPlayerByParticipantIdFromStore(
-                                participant.id,
-                                participants,
-                                players
-                              ).data.name
-                            }
-                            currentRound={currentRound}
-                            index={index}
-                          ></RoundParticipant>
-                        </td>
-                        <td className="t_num">
-                          {getParticipantTableNumber(participant.id)}
-                        </td>
-                        <td className="opp_info">
-                          {isParticipantArrived(currentRound,  participant.id) &&
-                          <RoundParticipantPossibleRivalsComp
-                            participant={participant}
-                          ></RoundParticipantPossibleRivalsComp>
-                          }
-                        </td>
-                        <td className="left_games">
-                          <RoundParticipantGamesLeftComp
-                            participant={participant}>
-                          </RoundParticipantGamesLeftComp>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <h4>{`משתתפים נוכחים (${currentRound?.data?.arrivedParticipants?.length})`}</h4>
+              <div className="arrived_participants_table_container">
+                <table className="table arrived_participants_table">
+                  <thead>
+                    <tr>
+                      <th className="pa_name">שם</th>
+                      <th className="t_num">שולחן</th>
+                      <th className="opp_info">
+                        <div className="box">
+                          יריבים אפשריים &nbsp;
+                          <button
+                            className=" info_all_rivals_button"
+                            onClick={checkAllPosibleRivals}
+                          >
+                            הצג הכל
+                          </button>
+                        </div>
+                      </th>
+                      <th className="left_games">
+                        <div className="box">
+                          משחקים שנותרו &nbsp;
+                          <button
+                            className=" info_all_games_left_button"
+                            onClick={checkAllGamesLeft}
+                          >
+                            הצג הכל
+                          </button>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedRoundParticipants().map((participant, index) => {
+                      return (
+                        <tr key={participant.id}>
+                          <td className="pa_name">
+                            <RoundParticipant
+                              participant={participant}
+                              name={
+                                getPlayerByParticipantIdFromStore(
+                                  participant.id,
+                                  participants,
+                                  players
+                                ).data.name
+                              }
+                              currentRound={currentRound}
+                              index={index}
+                            ></RoundParticipant>
+                          </td>
+                          <td className="t_num">
+                            {getParticipantTableNumber(participant.id)}
+                          </td>
+                          <td className="opp_info">
+                            {isParticipantArrived(
+                              currentRound,
+                              participant.id
+                            ) && (
+                              <RoundParticipantPossibleRivalsComp
+                                participant={participant}
+                              ></RoundParticipantPossibleRivalsComp>
+                            )}
+                          </td>
+                          <td className="left_games">
+                            <RoundParticipantGamesLeftComp
+                              participant={participant}
+                            ></RoundParticipantGamesLeftComp>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          }
+          )}
           {currentRound?.data?.isActive ? (
             <TablesComp></TablesComp>
           ) : (
