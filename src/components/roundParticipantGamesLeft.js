@@ -40,7 +40,7 @@ export default function RoundParticipantGamesLeftComp(props) {
           </div>
           {isParticipantsToPlay && (
             <ul className="possible_rivals_list">
-              {participant?.data?.participantsToPlayIds
+              {[...participant?.data?.participantsToPlayIds]
                 .sort((a, b) => {
                   const name1 = getPlayerByParticipantIdFromStore(
                     a,

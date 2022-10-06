@@ -32,7 +32,7 @@ export default function GamesLeftComp(props) {
       {isParticipantsToPlay && (
         <div className="participants_to_play_list_container container">
           <ul className="list">
-            {participant?.data?.participantsToPlayIds
+            {[...participant?.data?.participantsToPlayIds]
               .sort((a, b) => {
                 const name1 = getPlayerByParticipantIdFromStore(
                   a,

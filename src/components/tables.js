@@ -23,7 +23,7 @@ export default function TablesComp() {
         </button>
       </div>
       <div className="tabels_grid">
-        {tables
+        {[...tables]
           .sort((a, b) => a.data.number - b.data.number)
           .map((table) => {
             return <TableComp key={table.id} table={table}></TableComp>;

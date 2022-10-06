@@ -605,6 +605,19 @@ export async function getStandings(tourId) {
   const players = await getPlayersFromServer();
   const participants = await getTournamentParticipantsFromServer(tourId);
   const playersResults = {};
+  for (const p of participants) {
+    const player = getPlayerByIdFromStore(p.data.playerId, players)
+    playersResults[player.data.name] = {
+      name: player.data.name,
+      playerId: player.id,
+      participantId: p.id,
+      results: [],
+      games: 0,
+      wins: 0,
+      losses: 0,
+      plusMinus: 0,
+    };
+  }
   let allResults = [];
   for (const round of rounds) {
     for (const result of round.data.results) {
@@ -727,6 +740,14 @@ export async function getStandings(tourId) {
       participant2.data.arrivedToPlayoff
     ) {
       return 1;
+    }
+
+    if (a.games === 0 && b.games > 0) {
+      return 1
+    }
+
+    if (a.games > 0 && b.games === 0) {
+      return -1
     }
 
     if (a.wins > b.wins) {

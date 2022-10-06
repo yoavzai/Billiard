@@ -49,7 +49,7 @@ export default function RoundComp() {
   }
 
   function sortedRoundParticipants() {
-    let sortedParticipants = participants.sort((a, b) => {
+    let sortedParticipants = [...participants].sort((a, b) => {
       const player1 = currentRound.data.arrivedParticipants.find(
         (p) => p.participantId === a.id
       );

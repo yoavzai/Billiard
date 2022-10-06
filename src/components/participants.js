@@ -123,7 +123,7 @@ export default function ParticipantsComp() {
   }
 
   function sortedParticipantsByGamesLeft() {
-    const sorted = participants.sort((a, b) => {
+    const sorted = [...participants].sort((a, b) => {
       const difference =
         b.data.participantsToPlayIds.length -
         a.data.participantsToPlayIds.length;
@@ -136,7 +136,7 @@ export default function ParticipantsComp() {
   }
 
   function sortedParticipantsByName() {
-    return participants.sort((a, b) => {
+    return [...participants].sort((a, b) => {
       const name1 = getPlayerByParticipantIdFromStore(
         a.id,
         participants,

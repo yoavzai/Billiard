@@ -181,6 +181,12 @@ export default function RoundsComp() {
     }
   }
 
+  function technicalResultsNotConfirmed() {
+    setIsTechnicalsConfirmation(false);
+    setTechnicalResults([]);
+    setNewParticipants([]);
+  }
+
   async function calcTechnicals() {
     const lastRound = await getRoundByIdFromServer(
       currentTournament.id,
@@ -191,9 +197,7 @@ export default function RoundsComp() {
     const roundNumber = lastRound.data.number;
     const technicalResults = [];
     const newParticipants = participants.map((p) => {
-      if (!p.data.active) {
-        return p;
-      }
+
       const newParticipantsToPlayIds = [];
       const missingGames = missings[p.id];
 
@@ -228,13 +232,23 @@ export default function RoundsComp() {
         }
         newParticipantsToPlayIds.push(rivalParticipantId);
       }
+      console.log(getPlayerByParticipantIdFromStore(p.id, participants,players).data.name)
+      console.log("-------------------------------")
+      for (const id of newParticipantsToPlayIds) {
+        console.log(getPlayerByParticipantIdFromStore(id, participants,players).data.name)
+      }
+      console.log("-------------------------------")
       return {
         ...p,
         data: { ...p.data, participantsToPlayIds: newParticipantsToPlayIds },
       };
-    });
+    })
 
-    setTechnicalResults(technicalResults);
+    setTechnicalResults(technicalResults.sort((a,b) => {
+      const name1 = getPlayerByParticipantIdFromStore(a.participant1.id, participants, players).data.name
+      const name2 = getPlayerByParticipantIdFromStore(b.participant1.id, participants, players).data.name
+      return name1.localeCompare(name2)
+    }));
     setNewParticipants(newParticipants);
 
     // const roundNewData = {...lastRound.data, results: lastRound.data.results.concat(technicalResults)}
@@ -298,7 +312,7 @@ export default function RoundsComp() {
             </button>
             <button
               className="button"
-              onClick={() => setIsTechnicalsConfirmation(false)}
+              onClick={technicalResultsNotConfirmed}
             >
               לא
             </button>
