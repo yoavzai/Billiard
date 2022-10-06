@@ -394,21 +394,62 @@ body.round_open::before {
 }
 
 .turnament_dashboard .container.round_container .participants_box {
-  width: 41%;
+  width: 49%;
   height: auto;
   min-height: 100%;
 }
 
+.round_container .tables_container h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
 .round_container .tables_container {
-  width: 54%;
+  width: 45%;
+  position: relative;
 }
 
 .round_container .tables_container .tabels_grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin-top: 12px;
 }
 
+.round_container
+  .tables_container
+  .tabels_grid
+  .table_container
+  .text_input_container {
+  display: flex;
+  justify-content: space-between;
+}
+.round_container .tables_container .tabels_grid .table_container .tab_num_box {
+  margin-bottom: 10px;
+}
+
+.table_taken_contianer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.active_games_container {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+.table_taken_contianer .buttons_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+.round_container .tables_container .tabels_grid .table_container input,
+.round_container .tables_container .tabels_grid .table_container select {
+  margin-bottom: 4px;
+}
 .round_container .tables_container .tabels_grid .table_container {
   margin: 4px;
   padding: 16px;
@@ -427,6 +468,8 @@ body.round_open::before {
 .turnament_dashboard .container.standings_container th,
 .turnament_dashboard .container.standings_container td {
   padding: 0 10px;
+  line-height: 1;
+  text-align: center;
 }
 
 .turnament_dashboard .container.standings_container td button {
@@ -542,7 +585,7 @@ body.round_open::before {
 
 .arrived_participants_table th,
 .arrived_participants_table td {
-  padding: 10px 10px;
+  padding: 6px 10px;
   text-align: center;
 }
 
@@ -557,6 +600,14 @@ body.round_open::before {
 .possible_rivals_container .possible_rivals_list {
   margin: 10px 16px;
   font-size: 12px;
+  margin-right: 0;
+}
+.possible_rivals_container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
 }
 .possible_rivals_container {
   display: flex;
@@ -569,15 +620,36 @@ body.round_open::before {
 .arrived_participants_table .pa_name label {
   white-space: nowrap;
 }
+.arrived_participants_table .left_games button,
+.arrived_participants_table .opp_info button {
+  /* sposition: absolute; */
+}
+
+.arrived_participants_table thead .left_games .box,
+.arrived_participants_table thead .opp_info .box {
+  display: flex;
+  align-items: center;
+}
+.arrived_participants_table .left_games,
+.arrived_participants_table .opp_info {
+  width: 30%;
+  position: relative;
+}
+
+.arrived_participants_table .t_num {
+  width: 10%;
+}
 .arrived_participants_table .pa_name {
-  width: 20%;
+  width: 22%;
+
+  text-align: right;
 }
 .possible_rivals_list li:last-child span:last-child {
   display: none;
 }
 .arrived_participants_table .left_games,
 .arrived_participants_table .t_num {
-  width: 70px;
+  /* width: 70px; */
 }
 .arrived_participants_table {
   width: 100%;
@@ -761,6 +833,22 @@ body.round_open::before {
 }
 
 .possible_rivals_container .buttons_container button.info_button {
+  /* left: 12px;
+  top: 50%;
+  transform: translateY(-50%); */
+}
+
+.number_eye span {
+  margin-left: 10px;
+}
+.number_eye {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrived_participants_table thead button,
+.possible_rivals_container .buttons_container button.info_button {
   box-shadow: none;
   border: none;
   font-size: 0;
@@ -773,7 +861,9 @@ body.round_open::before {
   margin: 0;
 }
 .possible_rivals_container .buttons_container {
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
+  display: flex;
+  align-items: center;
 }
 
 .round_participant_container input {
@@ -959,4 +1049,36 @@ body.round_open::before {
 .round_participant_container {
   display: flex;
   align-items: center;
+}
+
+.turnament_top_buttons_box {
+  display: flex;
+}
+
+.filter_box .button.active::after {
+  content: "";
+  position: absolute;
+  display: flex;
+  width: 90%;
+  height: 2px;
+  background-color: #2d6c27;
+  top: calc(100% + 10px);
+  right: 50%;
+  transform: translate(50%);
+}
+.player_results_container .filter_box {
+  margin-bottom: 25px;
+}
+.filter_box .button.active {
+  /* background-color: #fff; */
+  position: relative;
+}
+.filter_box .button {
+  margin: 0 10px;
+  font-size: 13px;
+  /* background-color: rgba(0, 0, 0, 0.13); */
+}
+.filter_box {
+  display: flex;
+  justify-content: center;
 }

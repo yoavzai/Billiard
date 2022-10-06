@@ -18,7 +18,6 @@ import {
 } from "./utils";
 
 export default function TableComp(props) {
-
   const dispatch = useDispatch();
   const table = props.table;
   const currentTournament = useSelector((state) => state.currentTournament);
@@ -33,11 +32,10 @@ export default function TableComp(props) {
   const [isDeleteTableConfirmation, setIsDeleteTableConfirmation] =
     useState(false);
 
-
   useEffect(() => {
-    setNewTableNum(table.data.number)
-  }, [table])
-    
+    setNewTableNum(table.data.number);
+  }, [table]);
+
   async function participant1Selected(newParticipantId) {
     setIsInputErrorMessage(false);
     playerSelectedToTable(
@@ -150,20 +148,26 @@ export default function TableComp(props) {
 
   async function changeTableNumber() {
     if (newTableNum === table.data.number) {
-      return
+      return;
     }
-    const prevTable = tables.find(t => t.data.number === newTableNum)
+    const prevTable = tables.find((t) => t.data.number === newTableNum);
     if (prevTable != undefined) {
-      updateTablesNumbers(prevTable, table.data.number, table, newTableNum, tables, dispatch)
-    }
-    else {
-      updateTableNumber(table, tables, newTableNum, dispatch)
+      updateTablesNumbers(
+        prevTable,
+        table.data.number,
+        table,
+        newTableNum,
+        tables,
+        dispatch
+      );
+    } else {
+      updateTableNumber(table, tables, newTableNum, dispatch);
     }
   }
 
   function tableNumberKeyPress(e) {
     if (e.code === "Enter") {
-      e.target.blur()
+      e.target.blur();
     }
   }
 
@@ -179,8 +183,8 @@ export default function TableComp(props) {
     >
       {table?.data.isTaken ? (
         <div className="table_taken_contianer">
-          <div>
-            <span>מספר שולחן</span>
+          <div className="tab_num_box">
+            <span>מס שולחן</span>
             <input
               className="ta_num"
               type="text"
@@ -217,7 +221,7 @@ export default function TableComp(props) {
               סיים משחק
             </button>
             <button className="button" onClick={cancel}>
-              בטל משחק
+              בטל
             </button>
           </div>
         </div>
@@ -228,8 +232,8 @@ export default function TableComp(props) {
               החזר שולחן לפעילות
             </button>
           </div>
-          <div>
-            <span>מספר שולחן</span>
+          <div className="tab_num_box">
+            <span>מס שולחן</span>
             <input
               className="ta_num"
               type="text"
@@ -269,8 +273,8 @@ export default function TableComp(props) {
               </div>
             </div>
           )}
-          <div>
-            <span>מספר שולחן</span>
+          <div className="tab_num_box">
+            <span>מס שולחן</span>
             <input
               className="ta_num"
               type="text"
