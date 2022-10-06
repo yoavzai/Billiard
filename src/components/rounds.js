@@ -105,12 +105,9 @@ export default function RoundsComp() {
     setIsNewRoundConfirmation(true);
   }
 
-  function isGameInResults(name1, name2, results) {
+  function isGameInResults(id1, id2, results) {
     for (const r of results) {
-      if (
-        (r.winner === name1 && r.looser === name2) ||
-        (r.winner === name2 && r.looser === name1)
-      ) {
+      if (r.id === id1 + id2 || r.id === id2 + id1) {
         return true;
       }
     }
@@ -214,9 +211,22 @@ export default function RoundsComp() {
           technicalResults.push(
             produceTechnicalResult(p.id, rivalParticipantId, roundNumber)
           );
-        } else {
-          newParticipantsToPlayIds.push(rivalParticipantId);
+          continue;
         }
+        if (
+          (missingGames > 1 && rivalMissingGames === 0) ||
+          (missingGames > 1 &&
+            rivalMissingGames === 1 &&
+            arrivedParticipants
+              .map((p) => p.participantId)
+              .includes(rivalParticipantId))
+        ) {
+          technicalResults.push(
+            produceTechnicalResult(rivalParticipantId, p.id, roundNumber)
+          );
+          continue;
+        }
+        newParticipantsToPlayIds.push(rivalParticipantId);
       }
       return {
         ...p,
