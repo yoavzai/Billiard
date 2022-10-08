@@ -1082,3 +1082,279 @@ body.round_open::before {
   display: flex;
   justify-content: center;
 }
+
+.playoff16_bracket {
+  position: relative;
+  height: 1040px;
+}
+
+.playoff_game_container {
+  border: 1px solid #000;
+  padding: 10px;
+  border-radius: 6px;
+  width: 170px;
+}
+
+.playoff_game_container .buttons_container button {
+  font-size: 12px;
+  padding: 4px 6px;
+}
+.playoff_game_container.loosers_tier5 .buttons_container,
+.playoff_game_container.loosers_tier4 .buttons_container,
+.playoff_game_container.loosers_tier3 .buttons_container,
+.playoff_game_container.loosers_tier2 .buttons_container,
+.playoff_game_container.winners_tier2 .buttons_container,
+.playoff_game_container.winners_tier3 .buttons_container,
+.playoff_game_container.tier1 .buttons_container {
+  position: absolute;
+  left: 5px;
+  top: 3px;
+}
+
+.playoff_game_container h3 {
+  font-size: 14px;
+  /* font-weight: 400; */
+  margin: 0;
+}
+
+.playoff_game_container > div .gh {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  font-size: 8px;
+  text-decoration: overline;
+}
+.playoff_game_container > div {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+.playoff_game_container > div span {
+  font-size: 12px;
+}
+
+.playoff_game_container > div input {
+  font-size: 12px;
+  padding: 3px;
+  line-height: 1;
+  max-width: 25px;
+  margin: 4px;
+}
+
+.playoff_game_container.tier1 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+.playoff_game_container.tier1:nth-child(1) {
+}
+.playoff_game_container.tier1:nth-child(2) {
+  top: 150px;
+}
+.playoff_game_container.tier1:nth-child(3) {
+  top: 300px;
+}
+.playoff_game_container.tier1:nth-child(4) {
+  top: 450px;
+}
+.playoff_game_container.tier1:nth-child(5) {
+  top: 600px;
+}
+.playoff_game_container.tier1:nth-child(6) {
+  top: 750px;
+}
+.playoff_game_container.tier1:nth-child(7) {
+  top: 900px;
+}
+.playoff_game_container.tier1:nth-child(8) {
+  top: 1050px;
+}
+
+.playoff_game_container.winners_tier3 {
+  position: absolute;
+  left: 650px;
+  top: 160px;
+  background: rgba(45, 108, 39, 0.3);
+}
+.playoff_game_container.winners_tier2 {
+  position: absolute;
+  left: 220px;
+  top: 50px;
+  background: rgba(45, 108, 39, 0.3);
+}
+.playoff_game_container.loosers_tier2 {
+  position: absolute;
+  left: 220px;
+  top: 130px;
+  background: rgba(240, 156, 173, 0.3);
+}
+
+.playoff_game_container.loosers_tier3 {
+  position: absolute;
+  left: 430px;
+  top: 130px;
+  background: rgba(240, 156, 173, 0.3);
+}
+.playoff_game_container.loosers_tier4 {
+  position: absolute;
+  left: 650px;
+  top: 290px;
+  background: rgba(240, 156, 173, 0.3);
+}
+.playoff_game_container.loosers_tier5 {
+  position: absolute;
+  left: 860px;
+  top: 350px;
+  background: rgba(240, 156, 173, 0.3);
+}
+
+.playoff_game_container.winners_tier2:nth-child(9) {
+  top: 20px;
+}
+.playoff_game_container.winners_tier2:nth-child(10) {
+  top: 320px;
+}
+.playoff_game_container.winners_tier2:nth-child(11) {
+  top: 620px;
+}
+.playoff_game_container.winners_tier2:nth-child(12) {
+  top: 920px;
+}
+.playoff_game_container.loosers_tier2:nth-child(13) {
+  top: 130px;
+}
+.playoff_game_container.loosers_tier2:nth-child(14) {
+  top: 430px;
+}
+.playoff_game_container.loosers_tier2:nth-child(15) {
+  top: 730px;
+}
+.playoff_game_container.loosers_tier2:nth-child(16) {
+  top: 1030px;
+}
+.playoff_game_container.loosers_tier3:nth-child(17) {
+  top: 130px;
+}
+.playoff_game_container.loosers_tier3:nth-child(18) {
+  top: 430px;
+}
+.playoff_game_container.loosers_tier3:nth-child(19) {
+  top: 730px;
+}
+.playoff_game_container.loosers_tier3:nth-child(20) {
+  top: 1030px;
+}
+.playoff_game_container.winners_tier3:nth-child(21) {
+  top: 160px;
+}
+.playoff_game_container.winners_tier3:nth-child(22) {
+  top: 760px;
+}
+.playoff_game_container.loosers_tier4:nth-child(23) {
+  top: 290px;
+}
+.playoff_game_container.loosers_tier4:nth-child(24) {
+  top: 890px;
+}
+.playoff_game_container.loosers_tier5:nth-child(25) {
+  top: 400px;
+}
+.playoff_game_container.loosers_tier5:nth-child(26) {
+  top: 650px;
+}
+
+.finals_container {
+  display: flex;
+  margin-top: 200px;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  height: 500px;
+}
+
+.winners_container > div:nth-child(3) {
+  margin-top: 80px;
+}
+.winners_container::before {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 100px;
+  background: url("./eight-ball-pool-crown-design-vector-34278999.jpg")
+    no-repeat center center;
+  background-size: contain;
+}
+.winners_container {
+  margin-left: 50px;
+  width: 200px;
+}
+.winners_container h3 {
+  margin-bottom: 10px;
+}
+.winners_container span {
+  display: block;
+  width: 100%;
+  height: 45px;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  background: rgba(241, 241, 116, 0.63);
+  line-height: 45px;
+}
+
+.final4_container {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  position: relative;
+  align-items: flex-end;
+}
+
+.final4_container .finals {
+  background: rgba(45, 108, 39, 0.3);
+}
+.final4_container .finals:nth-child(3),
+.final4_container .finals:nth-child(4) {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.final4_container .finals:nth-child(3) {
+  background: rgba(240, 156, 173, 0.3);
+}
+.final4_container .finals:nth-child(4) {
+  bottom: unset;
+  top: 50%;
+  transform: translateY(-50%);
+  right: unset;
+  left: 300px;
+  background: rgba(45, 108, 39, 0.8);
+}
+
+.final4_container .playoff_game_container {
+  border: 1px solid #000;
+  padding: 20px;
+  border-radius: 6px;
+  width: 200px;
+}
+
+.final4_container .playoff_game_container h3 {
+  font-size: 18px;
+  /* font-weight: 400; */
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.final4_container .playoff_game_container > div span {
+  font-size: 12px;
+}
+
+.final4_container .playoff_game_container > div .gh {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  font-size: 8px;
+  text-decoration: overline;
+}

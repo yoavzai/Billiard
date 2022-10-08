@@ -606,7 +606,7 @@ export async function getStandings(tourId) {
   const participants = await getTournamentParticipantsFromServer(tourId);
   const playersResults = {};
   for (const p of participants) {
-    const player = getPlayerByIdFromStore(p.data.playerId, players)
+    const player = getPlayerByIdFromStore(p.data.playerId, players);
     playersResults[player.data.name] = {
       name: player.data.name,
       playerId: player.id,
@@ -743,11 +743,11 @@ export async function getStandings(tourId) {
     }
 
     if (a.games === 0 && b.games > 0) {
-      return 1
+      return 1;
     }
 
     if (a.games > 0 && b.games === 0) {
-      return -1
+      return -1;
     }
 
     if (a.wins > b.wins) {
@@ -2423,6 +2423,8 @@ export function getPlayoff16(standings) {
       player1Score: "",
       player2Score: "",
       winnerNextGame: 8,
+      player1PrevGame: "מקום 1",
+      player2PrevGame: "מקום 16",
       winnerPlayerNumber: "1",
       looserNextGame: 12,
       looserPlayerNumber: "1",
@@ -2439,6 +2441,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 12,
       looserPlayerNumber: "2",
       className: "tier1",
+      player1PrevGame: "מקום 8",
+      player2PrevGame: "מקום 9",
     },
     {
       game: 3,
@@ -2451,6 +2455,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 13,
       looserPlayerNumber: "1",
       className: "tier1",
+      player1PrevGame: "מקום 5",
+      player2PrevGame: "מקום 12",
     },
     {
       game: 4,
@@ -2463,6 +2469,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 13,
       looserPlayerNumber: "2",
       className: "tier1",
+      player1PrevGame: "מקום 4",
+      player2PrevGame: "מקום 13",
     },
     {
       game: 5,
@@ -2475,6 +2483,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 14,
       looserPlayerNumber: "1",
       className: "tier1",
+      player1PrevGame: "מקום 3",
+      player2PrevGame: "מקום 14",
     },
     {
       game: 6,
@@ -2487,6 +2497,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 14,
       looserPlayerNumber: "2",
       className: "tier1",
+      player1PrevGame: "מקום 6",
+      player2PrevGame: "מקום 11",
     },
     {
       game: 7,
@@ -2499,6 +2511,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 15,
       looserPlayerNumber: "1",
       className: "tier1",
+      player1PrevGame: "מקום 7",
+      player2PrevGame: "מקום 10",
     },
     {
       game: 8,
@@ -2511,6 +2525,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 15,
       looserPlayerNumber: "2",
       className: "tier1",
+      player1PrevGame: "מקום 2",
+      player2PrevGame: "מקום 15",
     },
     {
       game: 9,
@@ -2523,6 +2539,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 19,
       looserPlayerNumber: "2",
       className: "winners_tier2",
+      player1PrevGame: "מנצח משחק 1",
+      player2PrevGame: "מנצח משחק 2",
     },
     {
       game: 10,
@@ -2535,6 +2553,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 18,
       looserPlayerNumber: "2",
       className: "winners_tier2",
+      player1PrevGame: "מנצח משחק 3",
+      player2PrevGame: "מנצח משחק 4",
     },
     {
       game: 11,
@@ -2547,6 +2567,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 17,
       looserPlayerNumber: "2",
       className: "winners_tier2",
+      player1PrevGame: "מנצח משחק 5",
+      player2PrevGame: "מנצח משחק 6",
     },
     {
       game: 12,
@@ -2559,6 +2581,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 16,
       looserPlayerNumber: "2",
       className: "winners_tier2",
+      player1PrevGame: "מנצח משחק 7",
+      player2PrevGame: "מנצח משחק 8",
     },
     {
       game: 13,
@@ -2571,6 +2595,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier2",
+      player1PrevGame: "מפסיד משחק 1",
+      player2PrevGame: "מפסיד משחק 2",
     },
     {
       game: 14,
@@ -2583,6 +2609,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier2",
+      player1PrevGame: "מפסיד משחק 3",
+      player2PrevGame: "מפסיד משחק 4",
     },
     {
       game: 15,
@@ -2595,6 +2623,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier2",
+      player1PrevGame: "מפסיד משחק 5",
+      player2PrevGame: "מפסיד משחק 6",
     },
     {
       game: 16,
@@ -2607,6 +2637,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier2",
+      player1PrevGame: "מפסיד משחק 7",
+      player2PrevGame: "מפסיד משחק 8",
     },
     {
       game: 17,
@@ -2619,6 +2651,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier3",
+      player1PrevGame: "מנצח משחק 13",
+      player2PrevGame: "מפסיד משחק 12",
     },
     {
       game: 18,
@@ -2631,6 +2665,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier3",
+      player1PrevGame: "מנצח משחק 14",
+      player2PrevGame: "מפסיד משחק 11",
     },
     {
       game: 19,
@@ -2643,6 +2679,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier3",
+      player1PrevGame: "מנצח משחק 15",
+      player2PrevGame: "מפסיד משחק 10",
     },
     {
       game: 20,
@@ -2655,6 +2693,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier3",
+      player1PrevGame: "מנצח משחק 16",
+      player2PrevGame: "מפסיד משחק 9",
     },
     {
       game: 21,
@@ -2667,6 +2707,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 24,
       looserPlayerNumber: "2",
       className: "winners_tier3",
+      player1PrevGame: "מנצח משחק 9",
+      player2PrevGame: "מנצח משחק 10",
     },
     {
       game: 22,
@@ -2675,10 +2717,12 @@ export function getPlayoff16(standings) {
       player1Score: "",
       player2Score: "",
       winnerNextGame: 27,
-      winnerPlayerNumber: "2",
+      winnerPlayerNumber: "1",
       looserNextGame: 25,
-      looserPlayerNumber: "1",
+      looserPlayerNumber: "2",
       className: "winners_tier3",
+      player1PrevGame: "מנצח משחק 11",
+      player2PrevGame: "מנצח משחק 12",
     },
     {
       game: 23,
@@ -2691,6 +2735,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier4",
+      player1PrevGame: "מנצח משחק 17",
+      player2PrevGame: "מנצח משחק 18",
     },
     {
       game: 24,
@@ -2699,10 +2745,12 @@ export function getPlayoff16(standings) {
       player1Score: "",
       player2Score: "",
       winnerNextGame: 25,
-      winnerPlayerNumber: "2",
+      winnerPlayerNumber: "1",
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier4",
+      player1PrevGame: "מנצח משחק 19",
+      player2PrevGame: "מנצח משחק 20",
     },
     {
       game: 25,
@@ -2711,10 +2759,12 @@ export function getPlayoff16(standings) {
       player1Score: "",
       player2Score: "",
       winnerNextGame: 27,
-      winnerPlayerNumber: "1",
+      winnerPlayerNumber: "2",
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier5",
+      player1PrevGame: "מנצח משחק 23",
+      player2PrevGame: "מפסיד משחק 21",
     },
     {
       game: 26,
@@ -2727,6 +2777,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "loosers_tier5",
+      player1PrevGame: "מנצח משחק 24",
+      player2PrevGame: "מפסיד משחק 22",
     },
     {
       game: 27,
@@ -2739,6 +2791,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 28,
       looserPlayerNumber: "1",
       className: "finals",
+      player1PrevGame: "מנצח משחק 21",
+      player2PrevGame: "מנצח משחק 26",
     },
     {
       game: 28,
@@ -2751,6 +2805,8 @@ export function getPlayoff16(standings) {
       looserNextGame: 28,
       looserPlayerNumber: "2",
       className: "finals",
+      player1PrevGame: "מנצח משחק 22",
+      player2PrevGame: "מנצח משחק 25",
     },
     {
       game: 29,
@@ -2763,6 +2819,8 @@ export function getPlayoff16(standings) {
       looserNextGame: null,
       looserPlayerNumber: null,
       className: "finals",
+      player1PrevGame: "מפסיד משחק 27",
+      player2PrevGame: "מפסיד משחק 28",
     },
     {
       game: 30,
@@ -2775,6 +2833,8 @@ export function getPlayoff16(standings) {
       looserNextGame: "second",
       looserPlayerNumber: null,
       className: "finals",
+      player1PrevGame: "מנצח משחק 27",
+      player2PrevGame: "מנצח משחק 28",
     },
   ];
 

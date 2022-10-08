@@ -14,15 +14,15 @@ export default function Playoff16GameComp(props) {
 
   function enterScore(gameNum, playerNum, score) {
     const newWinners = currentTournament.data.winners;
-    const newGames = currentTournament.data.playoff16.map((game, index) => {
-      if (index === gameNum) {
+    const newGames = currentTournament.data.playoff16.map((g) => {
+      if (g.game === gameNum) {
         if (playerNum === 1) {
-          return { ...game, player1Score: score };
+          return { ...g, player1Score: score };
         } else {
-          return { ...game, player2Score: score };
+          return { ...g, player2Score: score };
         }
       } else {
-        return game;
+        return g;
       }
     });
     updatePlayoff16(currentTournament, newGames, newWinners, dispatch);
@@ -80,16 +80,17 @@ export default function Playoff16GameComp(props) {
 
   return (
     <div key={index} className={`playoff_game_container ${game.className}`}>
-      <h3>{`משחק ${index + 1}`}</h3>
+      <h3>{`משחק ${game.game}`}</h3>
       <div>
         <span>
           {getPlayerByIdFromStore(game?.player1?.playerId, players)?.data.name}
         </span>
         <input
           type="text"
-          onChange={(e) => enterScore(index, 1, e.target.value)}
+          onChange={(e) => enterScore(game.game, 1, e.target.value)}
           value={game.player1Score}
         ></input>
+        <span className="gh">{game.player1PrevGame}</span>
       </div>
       <div>
         <span>
@@ -97,9 +98,10 @@ export default function Playoff16GameComp(props) {
         </span>
         <input
           type="text"
-          onChange={(e) => enterScore(index, 2, e.target.value)}
+          onChange={(e) => enterScore(game.game, 2, e.target.value)}
           value={game.player2Score}
         ></input>
+        <span className="gh">{game.player2PrevGame}</span>
       </div>
       {isGameOver ? (
         <div className="buttons_container">
@@ -108,11 +110,14 @@ export default function Playoff16GameComp(props) {
           </button>
         </div>
       ) : (
-        <div className="buttons_container">
-          <button className="button" onClick={() => endGame()}>
-            סיים משחק
-          </button>
-        </div>
+        String(game.player1).length > 0 &&
+        String(game.player2).length > 0 && (
+          <div className="buttons_container">
+            <button className="button" onClick={() => endGame()}>
+              סיים משחק
+            </button>
+          </div>
+        )
       )}
       {isScoreErrorMessage && (
         <div>
