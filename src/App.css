@@ -1266,21 +1266,21 @@ body.round_open::before {
 
 .finals_container {
   display: flex;
-  margin-top: 200px;
+  margin-top: 170px;
   justify-content: flex-start;
   flex-direction: row-reverse;
   height: 500px;
 }
 
-.winners_container > div:nth-child(3) {
+/* .winners_container > div:nth-child(3) {
   margin-top: 80px;
-}
+} */
 .winners_container::before {
   content: "";
   display: block;
-  width: 100px;
-  height: 100px;
-  background: url("./eight-ball-pool-crown-design-vector-34278999.jpg")
+  width: 200px;
+  height: 200px;
+  background: url("./ballLogo.jpeg")
     no-repeat center center;
   background-size: contain;
 }
