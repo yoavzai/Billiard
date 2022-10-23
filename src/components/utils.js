@@ -1,4 +1,4 @@
-import db from "./firestore";
+let db
 
 // export async function getSortedTournamentsFromServer() {
 //    const toursRef =  await db.collection("tournaments").get()
@@ -416,7 +416,8 @@ export async function getTournamentsFromServer() {
   return tournaments;
 }
 
-export async function init(dispatch) {
+export async function init(dispatch, selectedDB) {
+  db = selectedDB
   const players = await getPlayersFromServer();
   const tables = await getTablesFromServer();
   const tournaments = await getTournamentsFromServer();
@@ -907,6 +908,11 @@ export async function addParticipant(
       ],
     });
   }
+  const [standings, allResults] = await getStandings(tourId);
+  dispatch({
+    type: "standings",
+    payload: { standings: standings, allResults: allResults },
+  });
 
   // newParticipants = await getTournamentParticipantsFromServer(tourId)
   // dispatch({type: "participants", payload: newParticipants})

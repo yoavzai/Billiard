@@ -188,6 +188,9 @@ export default function RoundsComp() {
   }
 
   async function calcTechnicals() {
+    if (rounds.length === 0) {
+      return
+    }
     const lastRound = await getRoundByIdFromServer(
       currentTournament.id,
       rounds[0].id
@@ -232,12 +235,7 @@ export default function RoundsComp() {
         }
         newParticipantsToPlayIds.push(rivalParticipantId);
       }
-      console.log(getPlayerByParticipantIdFromStore(p.id, participants,players).data.name)
-      console.log("-------------------------------")
-      for (const id of newParticipantsToPlayIds) {
-        console.log(getPlayerByParticipantIdFromStore(id, participants,players).data.name)
-      }
-      console.log("-------------------------------")
+
       return {
         ...p,
         data: { ...p.data, participantsToPlayIds: newParticipantsToPlayIds },
