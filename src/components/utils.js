@@ -898,7 +898,6 @@ export async function addParticipant(
     };
   });
   newParticipants.push({ id: newParticipantRef.id, data: participantData });
-  dispatch({ type: "participants", payload: newParticipants });
   for (const p of participants) {
     await updateParticipantOnServer(tourId, p.id, {
       ...p.data,
@@ -908,6 +907,7 @@ export async function addParticipant(
       ],
     });
   }
+  dispatch({ type: "participants", payload: newParticipants });
   const [standings, allResults] = await getStandings(tourId);
   dispatch({
     type: "standings",

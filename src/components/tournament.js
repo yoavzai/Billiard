@@ -9,7 +9,6 @@ import RoundsComp from "./rounds";
 import StandingsComp from "./standings";
 import {
   endTournament,
-  erasePlayoffData,
   getPlayoff16,
   getPlayoff8,
   loadTournamentData,
@@ -133,9 +132,9 @@ export default function TournamentComp() {
             {currentTournament.data.playoff8.length === 0 &&
             currentTournament.data.playoff16.length === 0 ? (
               <div className="buttons_container">
-                {/* <button className="button" onClick={startPlayoff8}>
+                <button className="button" onClick={startPlayoff8}>
                   התחל פלייאוף 8
-                </button> */}
+                </button>
                 &nbsp; &nbsp;
                 <button className="button" onClick={startPlayoff16}>
                   התחל פלייאוף 16

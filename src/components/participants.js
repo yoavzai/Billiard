@@ -50,21 +50,21 @@ export default function ParticipantsComp() {
     setIsAddPlayer(true);
     setAddPlayerErrorMessage(false);
     setNewPlayerData({ ...newPlayerData, name: wantedPlayerName });
-  }
+}
 
-  async function addNewParticipant(player) {
-    setIsAddingToServer(true);
-    const time = new Date();
-    const newParticipantData = {
-      playerId: player.id,
-      date: time.getTime(),
-      participantsToPlayIds: participants
-        .filter((p) => p.data.active)
+async function addNewParticipant(player) {
+  setIsAddingToServer(true);
+  const time = new Date();
+  const newParticipantData = {
+    playerId: player.id,
+    date: time.getTime(),
+    participantsToPlayIds: participants
+    .filter((p) => p.data.active)
         .map((participant) => participant.id),
       active: true,
       arrivedToPlayoff: true,
     };
-    addParticipant(
+    await addParticipant(
       newParticipantData,
       currentTournament.id,
       participants,
@@ -209,7 +209,8 @@ export default function ParticipantsComp() {
                 onChange={searchPlayer}
                 onKeyDown={searchPlayerKeyPress}
                 id="choose-players-text-input"
-                value={wantedPlayerName}
+                value={isAddingToServer ? "" : wantedPlayerName}
+                readOnly={isAddingToServer ? true : false}
               ></input>
               {isPresentPlayerOptions && (
                 <div className="drop_list">

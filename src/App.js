@@ -14,11 +14,12 @@ import 'firebase/compat/firestore'
 function App() {
 
   const dispatch = useDispatch()
-  const [userName, setUserName] = useState("guest")
+  const [userName, setUserName] = useState("אורח")
   const [isUserSelected, setIsUserSelected] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function login() {
-
+    setIsLoading(true)
     const firebaseConfig = 
       userName === "elad" ? 
       {
@@ -42,6 +43,7 @@ function App() {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore()
     await init(dispatch, db)
+    setIsLoading(false)
     setIsUserSelected(true)
   }
 
@@ -54,6 +56,11 @@ function App() {
           <Route path='/tournament/:id' element={<TournamentComp></TournamentComp>}></Route>
           <Route path='/players' element={<AllPlayersComp></AllPlayersComp>}></Route>
         </Routes>
+      :
+      isLoading ?
+      <div>
+        <span>מתחבר...</span>
+      </div>
       :
       <div>
         <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)}></input>

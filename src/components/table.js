@@ -151,7 +151,7 @@ export default function TableComp(props) {
       return;
     }
     const prevTable = tables.find((t) => t.data.number === newTableNum);
-    if (prevTable != undefined) {
+    if (prevTable !== undefined) {
       updateTablesNumbers(
         prevTable,
         table.data.number,
