@@ -23,6 +23,8 @@ export default function ParticipantComp(props) {
   const currentRound = useSelector((state) => state.currentRound);
   const [player, setPlayer] = useState({});
   const [isUpdatePlayer, setIsUpdtaePlayer] = useState(false);
+  const [isFreezingParticipant, setIsFreezingParticipant] = useState(false);
+  const [isUnfreezingParticipant, setIsUnfreezingParticipant] = useState(false);
   const [playerNewData, setPlayerNewData] = useState({ name: "", ranking: "" });
   const [isUpdatePlayerConfirmation, setIsUpdatePlayerConfirmation] =
     useState(false);
@@ -72,9 +74,10 @@ export default function ParticipantComp(props) {
     setIsUpdtaePlayer(false);
   }
 
-  function removeParticipantConfirmed() {
+  async function removeParticipantConfirmed() {
     setIsRemoveParticipantConfirmation(false);
-    freezeParticipant(
+    setIsFreezingParticipant(true)
+    await freezeParticipant(
       currentTournament.id,
       participant.id,
       currentRound,
@@ -82,6 +85,7 @@ export default function ParticipantComp(props) {
       tables,
       dispatch
     );
+    setIsFreezingParticipant(false)
   }
 
   async function removeParticipantBtnClick() {
@@ -133,7 +137,9 @@ export default function ParticipantComp(props) {
   }
 
   async function returnParticipantBtnClick() {
-    unfreezeParticipant(currentTournament.id, participant.id, currentRound, participants, tables, dispatch)
+    setIsUnfreezingParticipant(true)
+    await unfreezeParticipant(currentTournament.id, participant.id, currentRound, participants, tables, dispatch)
+    setIsUnfreezingParticipant(false)
   }
 
   return (
@@ -233,7 +239,7 @@ export default function ParticipantComp(props) {
         </div>
       ) : (
         <div>
-          {participant.data.active && participant.data.arrivedToPlayoff &&
+          {participant.data.active && participant.data.arrivedToPlayoff && !isUnfreezingParticipant &&
           <div className="buttons_container">
             <button className="button edit_button" onClick={editPlayer}>
               ערוך
@@ -249,7 +255,12 @@ export default function ParticipantComp(props) {
             </button>
           </div>
           }
-          {!participant.data.active &&
+          {(isFreezingParticipant || isUnfreezingParticipant) &&
+            <div>
+              <span>המתן...</span>
+            </div>
+          }
+          {!participant.data.active && !isFreezingParticipant &&
           <div className="buttons_container">
             <button
               className="button"

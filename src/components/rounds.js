@@ -37,6 +37,7 @@ export default function RoundsComp() {
     useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoadingNewRound, setIsLoadingNewround] = useState(false);
+  const [isLoadingTechnicals, setIsLoadingTechnicals] = useState(false);
 
   async function startNewRound() {
     setIsNewRoundConfirmation(false);
@@ -160,6 +161,7 @@ export default function RoundsComp() {
 
   async function technicalResultsConfirmed() {
     setIsTechnicalsConfirmation(false);
+    setIsLoadingTechnicals(true)
     const lastRound = await getRoundByIdFromServer(
       currentTournament.id,
       rounds[0].id
@@ -178,6 +180,7 @@ export default function RoundsComp() {
     for (const p of newParticipants) {
       await updateParticipantOnServer(currentTournament.id, p.id, p.data);
     }
+    setIsLoadingTechnicals(false)
   }
 
   function technicalResultsNotConfirmed() {
@@ -198,7 +201,7 @@ export default function RoundsComp() {
     const arrivedParticipants = lastRound.data.arrivedParticipants;
     const roundNumber = lastRound.data.number;
     const technicalResults = [];
-    const newParticipants = participants.map((p) => {
+    const newParticipantsTmp = participants.map((p) => {
 
       const newParticipantsToPlayIds = [];
       const missingGames = missings[p.id];
@@ -246,7 +249,7 @@ export default function RoundsComp() {
       const name2 = getPlayerByParticipantIdFromStore(b.participant1.id, participants, players).data.name
       return name1.localeCompare(name2)
     }));
-    setNewParticipants(newParticipants);
+    setNewParticipants(newParticipantsTmp);
 
     // const roundNewData = {...lastRound.data, results: lastRound.data.results.concat(technicalResults)}
     // dispatch({type: "participants", payload: newParticipants})
@@ -297,6 +300,11 @@ export default function RoundsComp() {
           </button>
         </div>
       )}
+      {isLoadingTechnicals &&
+        <div>
+          <span>שומר טכניים...</span>
+        </div>
+      }
       {isTechnicalsConfirmation && (
         <div>
           <span>האם להוסיף את התוצאות הבאות לסיבוב האחרון?</span>
