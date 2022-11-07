@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getPlayerByIdFromStore,
-  isValidScore,
-  updatePlayoff8,
-  updateWinners,
-} from "./utils";
+import { getPlayerByIdFromStore, isValidScore, updatePlayoff16, updatePlayoff8 } from "./utils";
 
 export default function Playoff8GameComp(props) {
   const dispatch = useDispatch();
@@ -19,15 +14,15 @@ export default function Playoff8GameComp(props) {
 
   function enterScore(gameNum, playerNum, score) {
     const newWinners = currentTournament.data.winners;
-    const newGames = currentTournament.data.playoff8.map((game, index) => {
-      if (index === gameNum) {
+    const newGames = currentTournament.data.playoff8.map((g) => {
+      if (g.game === gameNum) {
         if (playerNum === 1) {
-          return { ...game, player1Score: score };
+          return { ...g, player1Score: score };
         } else {
-          return { ...game, player2Score: score };
+          return { ...g, player2Score: score };
         }
       } else {
-        return game;
+        return g;
       }
     });
     updatePlayoff8(currentTournament, newGames, newWinners, dispatch);
@@ -69,8 +64,8 @@ export default function Playoff8GameComp(props) {
           const newGame = { ...g, player2: looser };
           return newGame;
         }
-      } else if (game.looserNextGame === "third") {
-        newWinners = { ...newWinners, third: looser };
+      } else if (game.winnerNextGame === "third") {
+        newWinners = { ...newWinners, third: winner };
         return g;
       } else if (game.winnerNextGame === "first") {
         newWinners = { ...newWinners, first: winner, second: looser };
@@ -85,16 +80,17 @@ export default function Playoff8GameComp(props) {
 
   return (
     <div key={index} className={`playoff_game_container ${game.className}`}>
-      <h3>{`משחק ${index + 1}`}</h3>
+      <h3>{`משחק ${game.game}`}</h3>
       <div>
         <span>
           {getPlayerByIdFromStore(game?.player1?.playerId, players)?.data.name}
         </span>
         <input
           type="text"
-          onChange={(e) => enterScore(index, 1, e.target.value)}
+          onChange={(e) => enterScore(game.game, 1, e.target.value)}
           value={game.player1Score}
         ></input>
+        <span className="gh">{game.player1PrevGame}</span>
       </div>
       <div>
         <span>
@@ -102,9 +98,10 @@ export default function Playoff8GameComp(props) {
         </span>
         <input
           type="text"
-          onChange={(e) => enterScore(index, 2, e.target.value)}
+          onChange={(e) => enterScore(game.game, 2, e.target.value)}
           value={game.player2Score}
         ></input>
+        <span className="gh">{game.player2PrevGame}</span>
       </div>
       {isGameOver ? (
         <div className="buttons_container">
@@ -113,11 +110,14 @@ export default function Playoff8GameComp(props) {
           </button>
         </div>
       ) : (
-        <div className="buttons_container">
-          <button className="button" onClick={() => endGame()}>
-            סיים משחק
-          </button>
-        </div>
+        String(game.player1).length > 0 &&
+        String(game.player2).length > 0 && (
+          <div className="buttons_container">
+            <button className="button" onClick={() => endGame()}>
+              סיים משחק
+            </button>
+          </div>
+        )
       )}
       {isScoreErrorMessage && (
         <div>

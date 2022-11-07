@@ -160,6 +160,11 @@ async function addNewParticipant(player) {
       const firstOption = document.getElementById("player_options0");
       firstOption.focus();
     }
+    else if (e.code === "Escape") {
+      setIsPresentPlayerOptions(false);
+      const searchInput = document.getElementById("choose-players-text-input");
+      searchInput.focus();
+    }
   }
 
   function playerOptionKeyPress(e) {
