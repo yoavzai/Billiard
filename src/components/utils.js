@@ -1,3 +1,5 @@
+import { saveAs } from 'file-saver'
+
 let db
 
 // export async function getSortedTournamentsFromServer() {
@@ -2845,4 +2847,56 @@ export function getPlayoff16(standings) {
   ];
 
   return games;
+}
+
+
+
+
+export async function saveToJson() {
+  const json = {"tournaments": [], "players": [], "tables": []}
+  const tournaments = await getTournamentsFromServer();
+  const players = await getPlayersFromServer();
+  const tables = await getTablesFromServer();
+  json["players"] = players
+  json["tables"] = tables
+  for (const tournament of tournaments) {
+    let currentTournament = await getTournamentByIdFromServer(tournament.id);
+    const participants = await getTournamentParticipantsFromServer(tournament.id);
+    const basicRounds = await getTournamentBasicRoundsDataFromServer(tournament.id);
+    const rounds = []
+    for (const r of basicRounds) {
+      const round = await getRoundByIdFromServer(tournament.id, r.id)
+      rounds.push(round)
+    }
+    currentTournament["participants"] = participants
+    currentTournament["rounds"] = rounds
+    json["tournaments"].push(currentTournament)
+  }
+
+  let blob = new Blob([JSON.stringify(json)], { type: 'application/json' })
+  const date = new Date()
+
+  saveAs(blob, "billiard data - "+date.toDateString())
+}
+export async function loadFromJson(file) {
+  const text = await file.text()
+  const content = JSON.parse(text)
+  const tournaments = content["tournaments"]
+  const players = content["players"]
+  const tables = content["tables"]
+  for (const player of players) {
+    await db.collection("players").doc(player.id).set(player["data"])
+  }
+  for (const table of tables) {
+    await db.collection("tables").doc(table.id).set(table["data"])
+  }
+  for (const tour of tournaments) {
+    await db.collection("tournaments").doc(tour.id).set(tour["data"])
+    for (const p of tour["participants"]) {
+      await db.collection("tournaments").doc(tour.id).collection("participants").doc(p.id).set(p["data"])
+    }
+    for (const r of tour["rounds"]) {
+      await db.collection("tournaments").doc(tour.id).collection("rounds").doc(r.id).set(r["data"])
+    }
+  }
 }
