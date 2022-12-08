@@ -196,6 +196,11 @@ export default function PlayerResultComp(props) {
                 <h4>טכני</h4>
               </div>
               }
+              {!result.active && !isDeleteResultConfirmation &&
+              <div className="inactive_result">
+                <h4>לא מחושב</h4>
+              </div>
+              }
 
               {isDeleteResultConfirmation ? (
                 <div className="confirmation_container">

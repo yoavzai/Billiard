@@ -518,6 +518,13 @@ body.round_open::before {
   bottom: 1px;
 }
 
+.player_results_container .result_container > .inactive_result {
+  text-align: center;
+  position: absolute;
+  right: 250px;
+  bottom: 1px;
+}
+
 .close_results {
   position: absolute;
   top: 10px;
