@@ -30,6 +30,7 @@ export default function TournamentComp() {
   const [isPlayoff8, setIsPlayoff8] = useState(false);
   const [isPlayoff16, setIsPlayoff16] = useState(false);
   const [isPlayoffErrorMessage, setIsPlayoffErrorMessage] = useState(false);
+  const userName = useSelector((state) => state.userName)
 
   useEffect(() => {
     loadTournamentData(params.id, dispatch);
@@ -105,6 +106,7 @@ export default function TournamentComp() {
         </div>
       ) : (
         <div className="tournament_container">
+          <span>{`שם משתמש: ${userName}`}</span>
           <div className="navigation_menu_container">
             <Link to="/">בית</Link>
             <Link to="/players">שחקנים</Link>

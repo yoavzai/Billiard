@@ -8,7 +8,6 @@ export default function Playoff16GameComp(props) {
   const players = useSelector((state) => state.players);
   const [scoreErrorMessage, setScoreErrorMessage] = useState("");
   const [isScoreErrorMessage, setIsScoreErrorMessage] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
   const index = props.index;
   const game = props.game;
 
@@ -36,7 +35,6 @@ export default function Playoff16GameComp(props) {
       return;
     }
 
-    setIsGameOver(true);
     const winner =
       Number(game.player1Score) > Number(game.player2Score)
         ? game.player1
@@ -48,6 +46,9 @@ export default function Playoff16GameComp(props) {
 
     let newWinners = currentTournament.data.winners;
     const newGames = currentTournament.data.playoff16.map((g, i) => {
+      if (g.game === game.game) {
+        return {...g, isGameOver: true}
+      }
       if (i === game.winnerNextGame) {
         if (game.winnerPlayerNumber === "1") {
           const newGame = { ...g, player1: winner };
@@ -103,22 +104,20 @@ export default function Playoff16GameComp(props) {
         ></input>
         <span className="gh">{game.player2PrevGame}</span>
       </div>
-      {isGameOver ? (
+      {game.isGameOver && currentTournament.data.isActive &&
         <div className="buttons_container">
           <button className="button" onClick={() => endGame()}>
             עדכן
           </button>
         </div>
-      ) : (
-        String(game.player1).length > 0 &&
-        String(game.player2).length > 0 && (
-          <div className="buttons_container">
-            <button className="button" onClick={() => endGame()}>
-              סיים משחק
-            </button>
-          </div>
-        )
-      )}
+      }
+      {!game.isGameOver && currentTournament.data.isActive && String(game.player1).length > 0 && String(game.player2).length > 0 &&
+        <div className="buttons_container">
+          <button className="button" onClick={() => endGame()}>
+            סיים משחק
+          </button>
+        </div>
+      }
       {isScoreErrorMessage && (
         <div>
           <span>{scoreErrorMessage}</span>

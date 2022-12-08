@@ -120,6 +120,7 @@ export default function RoundsComp() {
     roundNumber
   ) {
     let result = {
+      isTechnical: true,
       id: winnerParticipantId + looserParticipantId,
       roundNumber: roundNumber,
       participant1: { id: winnerParticipantId, score: "3", won: true },

@@ -457,6 +457,14 @@ body.round_open::before {
   width: calc(33% - 45px);
 }
 
+.tiebreak_select {
+  font-size: 14px;
+  border-radius: 6px;
+  width: 50%;
+  padding: 0%;
+  margin: 0%;
+}
+
 .round_container .tables_container .tabels_grid .table_container button {
   margin-top: 0;
 }
@@ -501,6 +509,13 @@ body.round_open::before {
   position: absolute;
   left: 10px;
   bottom: 10px;
+}
+
+.player_results_container .result_container > .technical_result {
+  text-align: center;
+  position: absolute;
+  right: 150px;
+  bottom: 1px;
 }
 
 .close_results {

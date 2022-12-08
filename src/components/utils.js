@@ -495,6 +495,9 @@ export async function loadTournamentData(tourId, dispatch) {
   const participants = await getTournamentParticipantsFromServer(tourId);
   const rounds = await getTournamentBasicRoundsDataFromServer(tourId);
   const [standings, allResults] = await getStandings(currentTournament.id);
+  // for (const p of participants) {
+  //   await updateParticipantOnServer(tourId,p.id,{...p.data, tieBreakValue: 0})
+  // }
   dispatch({
     type: "tournamentSelected",
     payload: {
@@ -763,7 +766,17 @@ export async function getStandings(tourId) {
       if (a.plusMinus > b.plusMinus) {
         return -1;
       }
-      return 0;
+      else if (a.plusMinus < b.plusMinus) {
+        return 1
+      }
+      else {
+        if (participant1.data.tieBreakValue > participant2.data.tieBreakValue) {
+          return -1
+        }
+        else {
+          return 1
+        }
+      }
     }
   });
   return [sortedPlayers, allResults];
@@ -1748,7 +1761,7 @@ export async function endGame(
     true
   );
   const participant1Won =
-    table.data.participant1Score > table.data.participant2Score ? true : false;
+    Number(table.data.participant1Score) > Number(table.data.participant2Score) ? true : false;
   const participant2Won = !participant1Won;
   const participant1Data = {
     id: table.data.participant1Id,
@@ -2853,6 +2866,17 @@ export function getPlayoff16(standings) {
 
 
 export async function saveToJson() {
+  // create a new handle
+  let newHandle
+  try {
+    newHandle = await window.showSaveFilePicker();
+  }
+  catch (AbortError) {
+    return
+  }
+  // create a FileSystemWritableFileStream to write to
+  const writableStream = await newHandle.createWritable();
+
   const json = {"tournaments": [], "players": [], "tables": []}
   const tournaments = await getTournamentsFromServer();
   const players = await getPlayersFromServer();
@@ -2874,9 +2898,16 @@ export async function saveToJson() {
   }
 
   let blob = new Blob([JSON.stringify(json)], { type: 'application/json' })
-  const date = new Date()
+  // const date = new Date()
+  // saveAs(blob, "billiard data - "+date.toDateString())
+  // saveAs(blob, "billiard data - Tue Dec 06 2022")
 
-  saveAs(blob, "billiard data - "+date.toDateString())
+  // write our file
+  await writableStream.write(blob);
+
+  // close the file and write the contents to disk.
+  await writableStream.close();
+
 }
 export async function loadFromJson(file) {
   const text = await file.text()

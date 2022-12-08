@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlayerResultsComp from "./playerResults";
-import { getMissingsAmount, getParticipantByIdFromStore } from "./utils";
+import { getMissingsAmount, getParticipantByIdFromStore, getStandings, getTournamentParticipantsFromServer, updateParticipantOnServer } from "./utils";
 
 export default function StandingsComp() {
 
+  const dispatch = useDispatch()
   const standings = useSelector((state) => state.standings);
   const participants = useSelector((state) => state.participants);
+  const currentTournament = useSelector((state) => state.currentTournament)
   const [isPresentPlayerResults, setIsPresentPlayerResults] = useState(false);
   const [playerToPresentResults, setPlayerToPresentResults] = useState({});
 
@@ -33,6 +35,17 @@ export default function StandingsComp() {
     setPlayerToPresentResults({});
   }
 
+  async function updateParticipantTieBreakValue(e, p) {
+    await updateParticipantOnServer(currentTournament.id, p.id, {...p.data, tieBreakValue: e.target.value})
+    const [newStandings, allResults] = await getStandings(currentTournament.id);
+    const newParticipants = await getTournamentParticipantsFromServer(currentTournament.id)
+    dispatch({type:"participants", payload: newParticipants})
+    dispatch({
+      type: "standings",
+      payload: { standings: newStandings, allResults: allResults },
+    });
+    e.target.blur()
+  }
 
   return (
     <div className="container standings_container">
@@ -48,6 +61,7 @@ export default function StandingsComp() {
             <th>יחס</th>
             <th>חיסורים</th>
             <th>תוצאות</th>
+            <th>שובר שוויון</th>
           </tr>
         </thead>
         <tbody>
@@ -70,6 +84,19 @@ export default function StandingsComp() {
                     >
                     הצג
                   </button>
+                </td>
+                <td>
+                  <select
+                    className="tiebreak_select"
+                    onChange={(e) => updateParticipantTieBreakValue(e, participant)}
+                    value={participant.data.tieBreakValue}
+                  >
+                    <option value={0}>0</option>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                  </select>
                 </td>
               </tr>
             );

@@ -10,13 +10,16 @@ const appReducer = (state = {
                               standings: [],
                               allResults: [],
                               rankings: ['D', 'C', 'B', 'A', 'A+', 'A++'],
-                              months: ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"]
+                              months: ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"],
+                              userName: ""
                             },
                             action) => 
 {
   const data = action.payload
   switch(action.type)
   {
+    case "userName" :
+      return {...state, userName: data.userName}
 
     case "startGame" :
       return {...state, tables: data.newTables, currentRound: data.newCurrentRound}

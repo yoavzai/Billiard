@@ -61,8 +61,9 @@ async function addNewParticipant(player) {
     participantsToPlayIds: participants
     .filter((p) => p.data.active)
         .map((participant) => participant.id),
-      active: true,
-      arrivedToPlayoff: true,
+    active: true,
+    arrivedToPlayoff: true,
+    tieBreakValue: 0
     };
     await addParticipant(
       newParticipantData,

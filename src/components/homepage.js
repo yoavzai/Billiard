@@ -2,6 +2,7 @@ import TournamentsComp from "./tournaments";
 import { Link } from "react-router-dom";
 import { loadFromJson, saveToJson } from "./utils";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 
 export default function HomeComp() {
@@ -9,6 +10,7 @@ export default function HomeComp() {
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState("")
+  const userName = useSelector((state) => state.userName)
 
   async function saveToComputer() {
     setIsSaving(true)
@@ -31,16 +33,11 @@ export default function HomeComp() {
 
   return (
     <div className="homepage_container">
-      <div className="navigation_menu_container">
-        <Link to="/">בית</Link>
-        <Link to="/players">שחקנים</Link>
-      </div>
-
-      <TournamentsComp></TournamentsComp>
+      <span>{`שם משתמש: ${userName}`}</span>
       <div className="buttons_container">
         <button className="button" onClick={saveToComputer}>שמור</button>
-        <input type="file" onChange={loadFromComputer}></input>
-        <button className="button" type="submit" onClick={openFile}>פתח</button>
+        {/* <input type="file" onChange={loadFromComputer}></input>
+        <button className="button" type="submit" onClick={openFile}>פתח</button> */}
       </div>
       {isSaving &&
       <div>
@@ -50,6 +47,12 @@ export default function HomeComp() {
       <div>
         <span>טוען...</span>  
       </div>}
+      <div className="navigation_menu_container">
+        <Link to="/">בית</Link>
+        <Link to="/players">שחקנים</Link>
+      </div>
+
+      <TournamentsComp></TournamentsComp>
     </div>
   );
 }

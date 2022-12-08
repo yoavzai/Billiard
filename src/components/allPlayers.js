@@ -10,6 +10,7 @@ export default function AllPlayersComp() {
 
     const dispatch = useDispatch()
     const rankings = useSelector(state => state.rankings)
+    const userName = useSelector(state => state.userName)
     const players = useSelector(state => state.players)
     // const [isAddPlayer, setIsAddPlayer] = useState(false)
     const [newPlayerData, setNewPlayerData] = useState({name: "", ranking : rankings[0]})
@@ -51,6 +52,7 @@ export default function AllPlayersComp() {
 
     return (
         <div className="all_players_container">
+            <span>{`שם משתמש: ${userName}`}</span>
             <div className='navigation_menu_container'>
                 <Link to="/">בית</Link>
                 <Link to="/players">שחקנים</Link>

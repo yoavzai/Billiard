@@ -25,9 +25,11 @@ export default function Playoff16Comp(props) {
         >
           סגור
         </button>
+        {currentTournament.data.isActive &&
         <button className="button" onClick={() => setIsCancelPlayoffConfirmation(true)}>
           בטל פלייאוף
         </button>
+        }
       </div>
       {isCancelPlayoffConfirmation && (
         <div className="confirmation_container right">

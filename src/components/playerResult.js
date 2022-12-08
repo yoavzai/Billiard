@@ -55,7 +55,7 @@ export default function PlayerResultComp(props) {
       currentTournament.id
     );
     const player1Won =
-      newResult.player1Score > newResult.player2Score ? true : false;
+      Number(newResult.player1Score) > Number(newResult.player2Score) ? true : false;
     const player2Won = !player1Won;
     let newResultData = {};
 
@@ -191,6 +191,11 @@ export default function PlayerResultComp(props) {
                 <span>{result.player2Name}</span>
                 <span>{result.player2Score}</span>
               </div>
+              {result.originalResult.isTechnical && !isDeleteResultConfirmation &&
+              <div className="technical_result">
+                <h4>טכני</h4>
+              </div>
+              }
 
               {isDeleteResultConfirmation ? (
                 <div className="confirmation_container">
@@ -239,10 +244,19 @@ export default function PlayerResultComp(props) {
             result.won ? "player_won" : "player_lost"
           }`}
         >
-          <span>{result.player1Name}</span>
-          <span>{result.player1Score}</span>
-          <span>{result.player2Name}</span>
-          <span>{result.player2Score}</span>
+          <div className="player_result_row">
+            <span>{result.player1Name}</span>
+            <span>{result.player1Score}</span>
+          </div>
+          <div className="player_result_row">
+            <span>{result.player2Name}</span>
+            <span>{result.player2Score}</span>
+          </div>
+          {result.originalResult.isTechnical &&
+          <div className="technical_result">
+            <h4>טכני</h4>
+          </div>
+          }
         </div>
       )}
     </div>
