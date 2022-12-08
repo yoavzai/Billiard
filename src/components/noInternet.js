@@ -18,7 +18,7 @@ export default function  NoInternetConnection(props) {
 
     window.addEventListener('offline', () => {
         setOnline(false)
-        navigate("/")
+        window.location.reload()
     });
 
     // if user is online, return the child component else return a custom component

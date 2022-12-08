@@ -107,6 +107,9 @@ export default function TournamentComp() {
       ) : (
         <div className="tournament_container">
           <span>{`שם משתמש: ${userName}`}</span>
+          <div className="buttons_container">
+            <button className="button" onClick={() => window.location.reload()}>התנתק</button>
+          </div>
           <div className="navigation_menu_container">
             <Link to="/">בית</Link>
             <Link to="/players">שחקנים</Link>

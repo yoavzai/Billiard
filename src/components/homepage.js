@@ -35,7 +35,10 @@ export default function HomeComp() {
     <div className="homepage_container">
       <span>{`שם משתמש: ${userName}`}</span>
       <div className="buttons_container">
-        <button className="button" onClick={saveToComputer}>שמור</button>
+        {userName === "אלעד קצוני" &&
+          <button className="button" onClick={saveToComputer}>שמור מסד נתונים</button>
+        }
+        <button className="button" onClick={() => window.location.reload()}>התנתק</button>
         {/* <input type="file" onChange={loadFromComputer}></input>
         <button className="button" type="submit" onClick={openFile}>פתח</button> */}
       </div>
