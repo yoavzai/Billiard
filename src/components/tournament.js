@@ -21,6 +21,7 @@ export default function TournamentComp() {
   const dispatch = useDispatch();
   const currentTournament = useSelector((state) => state.currentTournament);
   const standings = useSelector((state) => state.standings);
+  const players = useSelector((state) => state.players);
   const rounds = useSelector((state) => state.rounds);
   const tournaments = useSelector((state) => state.tournaments);
   const [isFinishTournamentErrorMessage, setIsFinishTournamentErrorMessage] =
@@ -33,7 +34,7 @@ export default function TournamentComp() {
   const userName = useSelector((state) => state.userName)
 
   useEffect(() => {
-    loadTournamentData(params.id, dispatch);
+    loadTournamentData(params.id, dispatch, players);
   }, []);
 
   function finishTournamentBtnClick() {

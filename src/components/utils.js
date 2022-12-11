@@ -490,11 +490,11 @@ export async function setRound(tourId, roundId, dispatch) {
   dispatch({ type: "currentRound", payload: newRound });
 }
 
-export async function loadTournamentData(tourId, dispatch) {
+export async function loadTournamentData(tourId, dispatch, players) {
   const currentTournament = await getTournamentByIdFromServer(tourId);
   const participants = await getTournamentParticipantsFromServer(tourId);
   const rounds = await getTournamentBasicRoundsDataFromServer(tourId);
-  const [standings, allResults] = await getStandings(currentTournament.id);
+  const [standings, allResults] = await getStandings(currentTournament.id, participants, players);
   // for (const p of participants) {
   //   await updateParticipantOnServer(tourId,p.id,{...p.data, tieBreakValue: 0})
   // }
@@ -606,10 +606,8 @@ function getPlayerByParticipantId(participantId, participants, players) {
   return player;
 }
 
-export async function getStandings(tourId) {
+export async function getStandings(tourId, participants, players) {
   const rounds = await getRoundsFromServer(tourId);
-  const players = await getPlayersFromServer();
-  const participants = await getTournamentParticipantsFromServer(tourId);
   const playersResults = {};
   for (const p of participants) {
     const player = getPlayerByIdFromStore(p.data.playerId, players);
@@ -866,6 +864,7 @@ export async function updatePlayer(playerId, playerNewData, players, dispatch) {
   });
   dispatch({ type: "players", payload: newPlayers });
   await updatePlayerOnServer(playerId, playerNewData);
+  return newPlayers
 
   // newPlayers = await getPlayersFromServer()
   // dispatch({type: "players", payload: newPlayers})
@@ -894,7 +893,8 @@ export async function addParticipant(
   participantData,
   tourId,
   participants,
-  dispatch
+  dispatch,
+  players
 ) {
   const newParticipantRef = await addNewParticipantOnServer(
     tourId,
@@ -913,6 +913,12 @@ export async function addParticipant(
     };
   });
   newParticipants.push({ id: newParticipantRef.id, data: participantData });
+  dispatch({ type: "participants", payload: newParticipants });
+  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
+  dispatch({
+    type: "standings",
+    payload: { standings: standings, allResults: allResults },
+  });
   for (const p of participants) {
     await updateParticipantOnServer(tourId, p.id, {
       ...p.data,
@@ -922,12 +928,7 @@ export async function addParticipant(
       ],
     });
   }
-  dispatch({ type: "participants", payload: newParticipants });
-  const [standings, allResults] = await getStandings(tourId);
-  dispatch({
-    type: "standings",
-    payload: { standings: standings, allResults: allResults },
-  });
+
 
   // newParticipants = await getTournamentParticipantsFromServer(tourId)
   // dispatch({type: "participants", payload: newParticipants})
@@ -939,7 +940,8 @@ export async function deleteParticipant(
   currentRound,
   participants,
   tables,
-  dispatch
+  dispatch,
+  players
 ) {
   let newCurrentRound = {};
 
@@ -1000,12 +1002,12 @@ export async function deleteParticipant(
     },
   });
 
-  await removeAllParticipantResults(tourId, participantId);
-  const [standings, allResults] = await getStandings(tourId);
+  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
+  await removeAllParticipantResults(tourId, participantId);
   await removeParticipantFromArrivedParticipantsOnAllRounds(
     tourId,
     participantId
@@ -1034,7 +1036,8 @@ export async function freezeParticipant(
   currentRound,
   participants,
   tables,
-  dispatch
+  dispatch,
+  players
 ) {
   let newCurrentRound = {};
   let participantNewData = {};
@@ -1108,12 +1111,12 @@ export async function freezeParticipant(
     },
   });
 
-  await updateParticipantOnServer(tourId, participantId, participantNewData);
-  const [standings, allResults] = await getStandings(tourId);
+  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
+  await updateParticipantOnServer(tourId, participantId, participantNewData);
   await removeParticipantFromArrivedParticipantsOnAllRounds(
     tourId,
     participantId
@@ -1139,7 +1142,8 @@ export async function unfreezeParticipant(
   currentRound,
   participants,
   tables,
-  dispatch
+  dispatch,
+  players
 ) {
   let newCurrentRound = {};
   let participantNewData = {};
@@ -1206,12 +1210,12 @@ export async function unfreezeParticipant(
     },
   });
 
-  await updateParticipantOnServer(tourId, participantId, participantNewData);
-  const [standings, allResults] = await getStandings(tourId);
+  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
+  await updateParticipantOnServer(tourId, participantId, participantNewData);
   await removeParticipantFromArrivedParticipantsOnAllRounds(
     tourId,
     participantId
@@ -1789,26 +1793,18 @@ export async function endGame(
       const updatedParticipantsToPlayIds = p.data.participantsToPlayIds.filter(
         (id) => id !== table.data.participant2Id
       );
-      return {
-        ...p,
-        data: {
-          ...p.data,
-          participantsToPlayIds: updatedParticipantsToPlayIds,
-        },
-      };
+      const newData = {...p.data, participantsToPlayIds: updatedParticipantsToPlayIds}
+      updateParticipantOnServer(currentTournament.id, p.id, newData)
+      return {...p, data: newData};
     }
 
     if (p.id === table.data.participant2Id) {
       const updatedParticipantsToPlayIds = p.data.participantsToPlayIds.filter(
         (id) => id !== table.data.participant1Id
       );
-      return {
-        ...p,
-        data: {
-          ...p.data,
-          participantsToPlayIds: updatedParticipantsToPlayIds,
-        },
-      };
+      const newData = {...p.data, participantsToPlayIds: updatedParticipantsToPlayIds}
+      updateParticipantOnServer(currentTournament.id, p.id, newData)
+      return {...p, data: newData};
     }
     return p;
   });
@@ -1849,15 +1845,12 @@ export async function endGame(
     currentRound.id,
     roundNewData
   );
-  const [standings, allResults] = await getStandings(currentTournament.id);
+  const [standings, allResults] = await getStandings(currentTournament.id, newParticipants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
   await updateTableOnServer(table.id, tableNewData);
-  for (const p of newParticipants) {
-    await updateParticipantOnServer(currentTournament.id, p.id, p.data);
-  }
 
   // newParticipants = await getTournamentParticipantsFromServer(currentTournament.id)
   // newCurrentRound = await getRoundByIdFromServer(currentTournament.id, currentRound.id)
@@ -1874,7 +1867,9 @@ export async function updateResult(
   round,
   currentRound,
   currentTournament,
-  dispatch
+  dispatch,
+  players,
+  participants
 ) {
   let newResults = round.data.results.map((r) => {
     if (r.id === result.id) {
@@ -1900,7 +1895,7 @@ export async function updateResult(
     dispatch({ type: "currentRound", payload: newRound });
   }
   await updateRoundOnServer(currentTournament.id, round.id, roundNewData);
-  const [standings, allResults] = await getStandings(currentTournament.id);
+  const [standings, allResults] = await getStandings(currentTournament.id, participants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
@@ -1930,9 +1925,11 @@ export async function removeResult(
         ...p.data.participantsToPlayIds,
         result.participant2.id,
       ];
+      const newData = { ...p.data, participantsToPlayIds: newParticipantsToPlayIds }
+      updateParticipantOnServer(currentTournament.id, p.id, newData)
       return {
         id: p.id,
-        data: { ...p.data, participantsToPlayIds: newParticipantsToPlayIds },
+        data: newData,
       };
     }
     if (p.id === result.participant2.id) {
@@ -1940,9 +1937,11 @@ export async function removeResult(
         ...p.data.participantsToPlayIds,
         result.participant1.id,
       ];
+      const newData = { ...p.data, participantsToPlayIds: newParticipantsToPlayIds }
+      updateParticipantOnServer(currentTournament.id, p.id, newData)
       return {
         id: p.id,
-        data: { ...p.data, participantsToPlayIds: newParticipantsToPlayIds },
+        data: newData,
       };
     }
     return p;
@@ -1964,14 +1963,11 @@ export async function removeResult(
   }
 
   await updateRoundOnServer(currentTournament.id, newRound.id, roundNewData);
-  const [standings, allResults] = await getStandings(currentTournament.id);
+  const [standings, allResults] = await getStandings(currentTournament.id, newParticipants, players);
   dispatch({
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
-  for (const p of newParticipants) {
-    await updateParticipantOnServer(currentTournament.id, p.id, p.data);
-  }
 
   // newCurrentRound = await getRoundByIdFromServer(currentTournament.id, newCurrentRound.id)
   // newParticipants = await getTournamentParticipantsFromServer(currentTournament.id)

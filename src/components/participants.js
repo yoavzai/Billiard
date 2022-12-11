@@ -69,7 +69,8 @@ async function addNewParticipant(player) {
       newParticipantData,
       currentTournament.id,
       participants,
-      dispatch
+      dispatch,
+      players
     );
     setIsAddingToServer(false);
     setWantedPlayerName("");

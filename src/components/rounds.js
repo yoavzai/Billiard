@@ -173,7 +173,7 @@ export default function RoundsComp() {
     };
     dispatch({ type: "participants", payload: newParticipants });
     await updateRoundOnServer(currentTournament.id, lastRound.id, roundNewData);
-    const [standings, allResults] = await getStandings(currentTournament.id);
+    const [standings, allResults] = await getStandings(currentTournament.id, newParticipants, players);
     dispatch({
       type: "standings",
       payload: { standings: standings, allResults: allResults },

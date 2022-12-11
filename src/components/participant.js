@@ -53,10 +53,10 @@ export default function ParticipantComp(props) {
     }
 
     setIsUpdatePlayerErrorMessage(false);
-    updatePlayer(player.id, playerNewData, players, dispatch);
+    const newPlayers = await updatePlayer(player.id, playerNewData, players, dispatch);
     setIsUpdtaePlayer(false);
     setIsUpdatePlayerConfirmation(true);
-    const [standings, allResults] = await getStandings(currentTournament.id);
+    const [standings, allResults] = await getStandings(currentTournament.id, participants, newPlayers);
     dispatch({
       type: "standings",
       payload: { standings: standings, allResults: allResults },
@@ -83,7 +83,8 @@ export default function ParticipantComp(props) {
       currentRound,
       participants,
       tables,
-      dispatch
+      dispatch,
+      players
     );
     setIsFreezingParticipant(false)
   }
@@ -116,7 +117,7 @@ export default function ParticipantComp(props) {
     })
     dispatch({type: "participants", payload: newParticipants})
     await updateParticipantOnServer(currentTournament.id, participant.id, participantNewData)
-    const [standings, allResults] = await getStandings(currentTournament.id)
+    const [standings, allResults] = await getStandings(currentTournament.id, newParticipants, players)
     dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
   }
 
@@ -132,13 +133,13 @@ export default function ParticipantComp(props) {
     })
     dispatch({type: "participants", payload: newParticipants})
     await updateParticipantOnServer(currentTournament.id, participant.id, participantNewData)
-    const [standings, allResults] = await getStandings(currentTournament.id)
+    const [standings, allResults] = await getStandings(currentTournament.id, newParticipants, players)
     dispatch({type: "standings", payload: {standings: standings, allResults: allResults}})
   }
 
   async function returnParticipantBtnClick() {
     setIsUnfreezingParticipant(true)
-    await unfreezeParticipant(currentTournament.id, participant.id, currentRound, participants, tables, dispatch)
+    await unfreezeParticipant(currentTournament.id, participant.id, currentRound, participants, tables, dispatch, players)
     setIsUnfreezingParticipant(false)
   }
 

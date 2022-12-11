@@ -83,7 +83,9 @@ export default function PlayerResultComp(props) {
       round,
       currentRound,
       currentTournament,
-      dispatch
+      dispatch,
+      players,
+      participants
     );
 
     setIsUpdating(false);

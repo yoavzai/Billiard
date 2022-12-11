@@ -8,6 +8,7 @@ export default function StandingsComp() {
   const dispatch = useDispatch()
   const standings = useSelector((state) => state.standings);
   const participants = useSelector((state) => state.participants);
+  const players = useSelector((state) => state.players);
   const currentTournament = useSelector((state) => state.currentTournament)
   const [isPresentPlayerResults, setIsPresentPlayerResults] = useState(false);
   const [playerToPresentResults, setPlayerToPresentResults] = useState({});
@@ -36,15 +37,20 @@ export default function StandingsComp() {
   }
 
   async function updateParticipantTieBreakValue(e, p) {
-    await updateParticipantOnServer(currentTournament.id, p.id, {...p.data, tieBreakValue: e.target.value})
-    const [newStandings, allResults] = await getStandings(currentTournament.id);
-    const newParticipants = await getTournamentParticipantsFromServer(currentTournament.id)
+    const newParticipants = participants.map(participant => {
+      if (participant.id == p.id) {
+        return {...p, data: {...p.data, tieBreakValue: e.target.value}}
+      }
+      return participant
+    })
+    const [newStandings, allResults] = await getStandings(currentTournament.id, newParticipants, players);
     dispatch({type:"participants", payload: newParticipants})
     dispatch({
       type: "standings",
       payload: { standings: newStandings, allResults: allResults },
     });
     e.target.blur()
+    await updateParticipantOnServer(currentTournament.id, p.id, {...p.data, tieBreakValue: e.target.value})
   }
 
   return (
