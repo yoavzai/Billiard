@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   gamesLeftAboveAvarge,
@@ -11,27 +11,21 @@ export default function GamesLeftComp(props) {
   const participant = props.participant;
   const [isParticipantsToPlay, setIsParticipantsToPlay] = useState(false);
 
+
   return (
-    <div className="games_left_container">
-      משחקים שנותרו: &nbsp;
+    <div>
       <span
         className={`${
           gamesLeftAboveAvarge(participants, participant) ? "red" : ""
         }`}
+        onMouseEnter={() => setIsParticipantsToPlay(true)}
+        onMouseLeave={() => setIsParticipantsToPlay(false)}
       >
         {participant?.data?.participantsToPlayIds.length}
       </span>
-      <div className="buttons_container">
-        <button
-          className="button info_button"
-          onClick={() => setIsParticipantsToPlay(!isParticipantsToPlay)}
-        >
-          מידע
-        </button>
-      </div>
       {isParticipantsToPlay && (
         <div className="participants_to_play_list_container container">
-          <ul className="list">
+          <ul>
             {[...participant?.data?.participantsToPlayIds]
               .sort((a, b) => {
                 const name1 = getPlayerByParticipantIdFromStore(

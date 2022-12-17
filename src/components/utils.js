@@ -913,12 +913,7 @@ export async function addParticipant(
     };
   });
   newParticipants.push({ id: newParticipantRef.id, data: participantData });
-  dispatch({ type: "participants", payload: newParticipants });
-  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
-  dispatch({
-    type: "standings",
-    payload: { standings: standings, allResults: allResults },
-  });
+
   for (const p of participants) {
     await updateParticipantOnServer(tourId, p.id, {
       ...p.data,
@@ -927,6 +922,13 @@ export async function addParticipant(
         newParticipantRef.id,
       ],
     });
+  
+  dispatch({ type: "participants", payload: newParticipants });
+  const [standings, allResults] = await getStandings(tourId, newParticipants, players);
+  dispatch({
+    type: "standings",
+    payload: { standings: standings, allResults: allResults },
+  });
   }
 
 
@@ -1102,6 +1104,17 @@ export async function freezeParticipant(
     return t;
   });
 
+  await updateParticipantOnServer(tourId, participantId, participantNewData);
+  await removeParticipantFromArrivedParticipantsOnAllRounds(
+    tourId,
+    participantId
+  );
+  for (const p of newParticipants) {
+    await updateParticipantOnServer(tourId, p.id, p.data);
+  }
+  if (tableId !== undefined) {
+    await updateTableOnServer(tableId, tableNewData);
+  }
   dispatch({
     type: "participantRemoved",
     payload: {
@@ -1116,17 +1129,6 @@ export async function freezeParticipant(
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
-  await updateParticipantOnServer(tourId, participantId, participantNewData);
-  await removeParticipantFromArrivedParticipantsOnAllRounds(
-    tourId,
-    participantId
-  );
-  for (const p of newParticipants) {
-    await updateParticipantOnServer(tourId, p.id, p.data);
-  }
-  if (tableId !== undefined) {
-    await updateTableOnServer(tableId, tableNewData);
-  }
 
   // newParticipants = await getTournamentParticipantsFromServer(tourId)
   // if (Object.keys(newCurrentRound).length !== 0){
@@ -1201,6 +1203,17 @@ export async function unfreezeParticipant(
     return t;
   });
 
+  await updateParticipantOnServer(tourId, participantId, participantNewData);
+  await removeParticipantFromArrivedParticipantsOnAllRounds(
+    tourId,
+    participantId
+  );
+  for (const p of newParticipants) {
+    await updateParticipantOnServer(tourId, p.id, p.data);
+  }
+  if (tableId !== undefined) {
+    await updateTableOnServer(tableId, tableNewData);
+  }
   dispatch({
     type: "participantReturned",
     payload: {
@@ -1215,17 +1228,6 @@ export async function unfreezeParticipant(
     type: "standings",
     payload: { standings: standings, allResults: allResults },
   });
-  await updateParticipantOnServer(tourId, participantId, participantNewData);
-  await removeParticipantFromArrivedParticipantsOnAllRounds(
-    tourId,
-    participantId
-  );
-  for (const p of newParticipants) {
-    await updateParticipantOnServer(tourId, p.id, p.data);
-  }
-  if (tableId !== undefined) {
-    await updateTableOnServer(tableId, tableNewData);
-  }
 
   // newParticipants = await getTournamentParticipantsFromServer(tourId)
   // if (Object.keys(newCurrentRound).length !== 0){
@@ -2807,7 +2809,7 @@ export function getPlayoff16(standings) {
       winnerPlayerNumber: "1",
       looserNextGame: 28,
       looserPlayerNumber: "1",
-      className: "finals",
+      className: "semi_finals",
       player1PrevGame: "מנצח משחק 21",
       player2PrevGame: "מנצח משחק 26",
     },
@@ -2821,7 +2823,7 @@ export function getPlayoff16(standings) {
       winnerPlayerNumber: "2",
       looserNextGame: 28,
       looserPlayerNumber: "2",
-      className: "finals",
+      className: "semi_finals",
       player1PrevGame: "מנצח משחק 22",
       player2PrevGame: "מנצח משחק 25",
     },
@@ -2835,7 +2837,7 @@ export function getPlayoff16(standings) {
       winnerPlayerNumber: null,
       looserNextGame: null,
       looserPlayerNumber: null,
-      className: "finals",
+      className: "third_place",
       player1PrevGame: "מפסיד משחק 27",
       player2PrevGame: "מפסיד משחק 28",
     },
@@ -2849,7 +2851,7 @@ export function getPlayoff16(standings) {
       winnerPlayerNumber: null,
       looserNextGame: "second",
       looserPlayerNumber: null,
-      className: "finals",
+      className: "final",
       player1PrevGame: "מנצח משחק 27",
       player2PrevGame: "מנצח משחק 28",
     },

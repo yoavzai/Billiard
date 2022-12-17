@@ -81,7 +81,7 @@ export default function Playoff16GameComp(props) {
 
   return (
     <div key={index} className={`playoff_game_container ${game.className}`}>
-      <h3>{`משחק ${game.game}`}</h3>
+      <h3>{`משחק ${game.game} ${(game.game === 27 || game.game === 28) ? '  -  חצי גמר' : game.game === 30 ? ' - גמר' : game.game === 29 ? ' - מקום 3' : ''}`}</h3>
       <div>
         <span>
           {getPlayerByIdFromStore(game?.player1?.playerId, players)?.data.name}

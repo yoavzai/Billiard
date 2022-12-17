@@ -306,8 +306,8 @@ export default function RoundsComp() {
           <span>שומר טכניים...</span>
         </div>
       }
-      {isTechnicalsConfirmation && (
-        <div>
+      {isTechnicalsConfirmation && technicalResults.length > 0 && (
+        <div className="technical_results_container">
           <span>האם להוסיף את התוצאות הבאות לסיבוב האחרון?</span>
           {technicalResults.map((r) => {
             return <RoundResultComp key={r.id} result={r}></RoundResultComp>;
@@ -325,6 +325,16 @@ export default function RoundsComp() {
           </div>
         </div>
       )}
+      {isTechnicalsConfirmation && technicalResults.length === 0 &&
+      <div className="technical_results_container">
+        <span>אין טכניים</span>
+        <div className="buttons_container">
+            <button className="button ok_button" onClick={() => setIsTechnicalsConfirmation(false)}>
+              Ok
+            </button>
+        </div>
+      </div>
+      }
       {isNewRoundConfirmation && (
         <div className="confirmation_container">
           <span>להתחיל סיבוב</span>

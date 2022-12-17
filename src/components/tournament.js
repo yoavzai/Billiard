@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import AddParticipantsComp from "./addParticipant";
 import ParticipantsComp from "./participants";
 import Playoff16Comp from "./playoff16";
 import Playoff8Comp from "./playoff8";
@@ -107,9 +108,11 @@ export default function TournamentComp() {
         </div>
       ) : (
         <div className="tournament_container">
-          <span>{`שם משתמש: ${userName}`}</span>
-          <div className="buttons_container">
-            <button className="button" onClick={() => window.location.reload()}>התנתק</button>
+          <div className="user_name_container">
+              <span>{`שם משתמש: ${' '+userName}`}</span>
+              <div>
+                <button className="button" onClick={() => window.location.reload()}>התנתק</button>
+              </div>
           </div>
           <div className="navigation_menu_container">
             <Link to="/">בית</Link>
@@ -127,6 +130,7 @@ export default function TournamentComp() {
               {currentTournament?.data?.isActive ? " (פעיל)" : " (הסתיים)"}
             </span>
           </h2>
+          {!isPlayoff16 && !isPlayoff8 &&
           <div className="turnament_top_buttons_box">
             {currentTournament?.data?.isActive && (
               <div className="buttons_container finish_turnament">
@@ -138,10 +142,10 @@ export default function TournamentComp() {
             {currentTournament.data.playoff8.length === 0 &&
             currentTournament.data.playoff16.length === 0 ? (
               <div className="buttons_container">
-                <button className="button" onClick={startPlayoff8}>
+                {/* <button className="button" onClick={startPlayoff8}>
                   התחל פלייאוף 8
                 </button>
-                &nbsp; &nbsp;
+                &nbsp; &nbsp; */}
                 <button className="button" onClick={startPlayoff16}>
                   התחל פלייאוף 16
                 </button>
@@ -160,6 +164,10 @@ export default function TournamentComp() {
               </div>
             )}
           </div>
+          }
+          {!isPlayoff16 && !isPlayoff8 &&
+          <AddParticipantsComp></AddParticipantsComp>
+          }
           {isPlayoffErrorMessage && (
             <div>
               <span>אין מספיק שחקנים</span>
@@ -212,11 +220,13 @@ export default function TournamentComp() {
               <Playoff16Comp closePlayoff={closePlayoff}></Playoff16Comp>
             </div>
           )}
+          {!isPlayoff16 && !isPlayoff8 &&
           <div className="turnament_dashboard">
             <StandingsComp></StandingsComp>
-            <ParticipantsComp></ParticipantsComp>
+            {/* <ParticipantsComp></ParticipantsComp> */}
             <RoundsComp></RoundsComp>
           </div>
+          }
         </div>
       )}
     </div>

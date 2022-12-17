@@ -52,9 +52,11 @@ export default function AllPlayersComp() {
 
     return (
         <div className="all_players_container">
-            <span>{`שם משתמש: ${userName}`}</span>
-            <div className="buttons_container">
-                <button className="button" onClick={() => window.location.reload()}>התנתק</button>
+            <div className="user_name_container">
+                <span>{`שם משתמש: ${' '+userName}`}</span>
+                <div>
+                    <button className="button" onClick={() => window.location.reload()}>התנתק</button>
+                </div>
             </div>
             <div className='navigation_menu_container'>
                 <Link to="/">בית</Link>
