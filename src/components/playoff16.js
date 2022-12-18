@@ -8,6 +8,7 @@ export default function Playoff16Comp(props) {
   const currentTournament = useSelector((state) => state.currentTournament);
   const players = useSelector((state) => state.players);
   const [isCancelPlayoffConfirmation, setIsCancelPlayoffConfirmation] = useState(false)
+  const [isWinners, setIsWinners] = useState(false)
 
 
   function cancelPlayoffConfirmed() {
@@ -29,6 +30,7 @@ export default function Playoff16Comp(props) {
           בטל פלייאוף
         </button>
         }
+        <button className="button" onClick={() => setIsWinners(!isWinners)}>מנצחים</button>
       </div>
       {isCancelPlayoffConfirmation && (
         <div className="confirmation_container right">
@@ -61,7 +63,8 @@ export default function Playoff16Comp(props) {
             );
           })}
       </div>
-      <div className="winners_container">
+      {isWinners &&
+      <div className="winners_container container">
         <div>
           <h3>מקום ראשון</h3>
           <span>
@@ -96,6 +99,7 @@ export default function Playoff16Comp(props) {
           </span>
         </div>
       </div>
+      }
     </div>
   );
 }

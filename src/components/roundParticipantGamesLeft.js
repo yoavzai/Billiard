@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   gamesLeftAboveAvarge,
-  getParticipantByIdFromStore,
   getPlayerByParticipantIdFromStore,
 } from "./utils";
 
@@ -44,8 +43,8 @@ export default function RoundParticipantGamesLeftComp(props) {
             <ul className="possible_rivals_list">
               {[...participant?.data?.participantsToPlayIds]
                 .sort((a, b) => {
-                  const aArrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId == a).length > 0
-                  const bArrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId == b).length > 0
+                  const aArrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId === a).length > 0
+                  const bArrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId === b).length > 0
                   if (aArrived && !bArrived) {
                      return -1
                   }
@@ -63,7 +62,7 @@ export default function RoundParticipantGamesLeftComp(props) {
                   // return name1.localeCompare(name2);
                 })
                 .map((participantId) => {
-                  const arrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId == participantId).length > 0
+                  const arrived = currentRound.data.arrivedParticipants.filter((p) => p.participantId === participantId).length > 0
                   return (
                     <li key={participantId}>
                       <span className={arrived ? "green" : ""}>
